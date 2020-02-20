@@ -35,6 +35,7 @@
         spine-width (/ spine-width 4)]
     (prn [book spine-width pages])
     [:div.book
+     {:style {:animation-duration (str (+ (rand 10) 5) "s")}}
      [:div.face
       {:style {:width (px width)
                :height (px height)
@@ -85,7 +86,7 @@
                {:key (str "page" page 1)
                 :style {:width (px width)
                         :height (px height)
-                        :transform (trans (tz (- (/ spine-width 2) 0.2))
+                        :transform (trans (tz (- (/ spine-width 2) 0.02))
                                           (x 0))}}
                [:div.face.page
                 {:id (str "page" page 1)
@@ -117,7 +118,8 @@
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
-     (make-book (nth bs 1))]))
+     (make-book (nth bs 1))
+     (make-book (nth bs 2))]))
 
 ;; -------------------------
 ;; Initialize app
