@@ -5,23 +5,9 @@ body {
   padding-top: 72px;
   -webkit-font-smoothing: antialiased;
   font-size: 1.125em;
-  color: #333;
+  color: white;
   line-height: 1.5em;
-}
-
-h1, h2, h3 {
-  color: #000;
-}
-h1 {
-  font-size: 2.5em
-}
-
-h2 {
-  font-size: 2em
-}
-
-h3 {
-  font-size: 1.5em
+  background: black;
 }
 
 a {
