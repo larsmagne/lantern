@@ -5,6 +5,7 @@
 ;; -------------------------
 ;; Views
 
+
 (defn px [number]
   (str number "px"))
 
@@ -29,14 +30,38 @@
 (defn trans [& elems]
   (reduce str (interpose " " elems)))
 
+(defn randoms []
+  (sort (map (fn [_]
+               (Math/floor (rand 360)))
+             (range 0 5))))
+
+(defn make-keyframes [name]
+  (reduce #'str
+          (conj
+           (concat
+            (map (fn [i xv yv zv]
+                   (str (* i 20) "% { transform: "
+                        (trans (x xv) (y yv) (z zv))
+                        "; } "))
+                 (range 1 5)
+                 (randoms)
+                 (randoms)
+                 (randoms))
+            (list "100% { transform: translateZ(-50px) rotateY(360deg) rotateX(360deg) rotateZ(360deg); }}"))
+           (str "@keyframes spinner-" name " { 0% { transform: translateZ(-50px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "))))                     
+
 (defn make-book [[book spine-width pages]]
-  (let [shrink 8
+  (let [shrink 4
         height (/ 2256 shrink)
         width (/ 1392 shrink)
-        spine-width (/ spine-width shrink)]
-    (prn [book spine-width pages])
+        spine-width (/ spine-width shrink)
+        keyframes (make-keyframes book)
+        node (.getElementById js/document "keyframes")]
+    ;; Append new random keyframes for this book.
+    (set! (.-innerHTML node) (str (.-innerHTML node) keyframes))
     [:div.book
      {:style {:animation-duration (str (+ (rand 10) 5) "s")
+              :animation-name (str "spinner-" book)
               :width (px width)
               :height (px height)}}
      [:div.face
@@ -121,7 +146,7 @@
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
-     (make-book (nth bs 1))
+     (make-book (nth bs 0))
      (make-book (nth bs 2))]))
 
 ;; -------------------------

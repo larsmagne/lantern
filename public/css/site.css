@@ -20,14 +20,6 @@ a:hover {
   text-decoration: underline;
 }
 
-.face {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-}
-
 @keyframes spinner {
   0% {
     transform: translateZ(-50px) rotateY(0deg) rotateX(0deg);
@@ -52,13 +44,16 @@ a:hover {
 .book {
   position: relative;
   transform-style: preserve-3d;
-}
-
-.book {
-  animation-name: spinner;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  animation-duration: 10s;
+}
+
+.face {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 @keyframes open {
