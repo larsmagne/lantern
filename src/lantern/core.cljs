@@ -30,12 +30,15 @@
   (reduce str (interpose " " elems)))
 
 (defn make-book [[book spine-width pages]]
-  (let [height 564
-        width 348
-        spine-width (/ spine-width 4)]
+  (let [shrink 8
+        height (/ 2256 shrink)
+        width (/ 1392 shrink)
+        spine-width (/ spine-width shrink)]
     (prn [book spine-width pages])
     [:div.book
-     {:style {:animation-duration (str (+ (rand 10) 5) "s")}}
+     {:style {:animation-duration (str (+ (rand 10) 5) "s")
+              :width (px width)
+              :height (px height)}}
      [:div.face
       {:style {:width (px width)
                :height (px height)

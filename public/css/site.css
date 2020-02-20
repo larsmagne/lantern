@@ -50,8 +50,6 @@ a:hover {
 }
 
 .book {
-  width: 348px;
-  height: 564px;
   position: relative;
   transform-style: preserve-3d;
 }
