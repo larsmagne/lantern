@@ -35,13 +35,16 @@
         spine-width (/ spine-width 4)]
     (prn [book spine-width pages])
     [:div.book
-     [:div.face.front
-      {:style {:background-image (img (str book "/01.jpg"))
-               :width (px width)
+     [:div.face
+      {:style {:width (px width)
                :height (px height)
-               :background-size (str (px width) " " (px height))
                :transform (str "rotateY(0deg) translateZ("
-                               (px (/ spine-width 2)) ")")}}]
+                               (px (/ spine-width 2)) ")")}}
+      [:div.face.front
+       {:style {:background-image (img (str book "/01.jpg"))
+                :width (px width)
+                :height (px height)
+                :background-size (str (px width) " " (px height))}}]]
      [:div.face.back
       {:style {:background-image (img (str book "/02.jpg"))
                :width (px width)
@@ -98,6 +101,7 @@
                   :background-image (img (str book "/p01.jpg"))
                   :background-size (str (px (* width 2)) " " (px height))
                   :background-position (str (px (- width)) " " (px height))}}]]
+              ;; Odd pages.
               [:div.face
                {:key (str "page" page)
                 :style {:width (px width)
