@@ -86,7 +86,7 @@
                {:key (str "page" page 1)
                 :style {:width (px width)
                         :height (px height)
-                        :transform (trans (tz (- (/ spine-width 2) 0.02))
+                        :transform (trans (tz (- (/ spine-width 2) 0.2))
                                           (x 0))}}
                [:div.face.page
                 {:id (str "page" page 1)

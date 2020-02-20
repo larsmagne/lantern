@@ -65,13 +65,13 @@ a:hover {
 
 @keyframes open {
   0% {
-    transform: perspective(4000px) rotateY(-120deg);
+    transform: rotateY(-120deg);
   }
   50% {
-    transform: perspective(4000px) rotateY(0deg);
+    transform: rotateY(0deg);
   }
   100% {
-    transform: perspective(4000px) rotateY(-120deg);
+    transform: rotateY(-120deg);
   }
 }
 
