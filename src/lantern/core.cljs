@@ -43,7 +43,8 @@
        {:style {:background-image (img (str book "/01.jpg"))
                 :width (px width)
                 :height (px height)
-                :background-size (str (px width) " " (px height))}}]]
+                :background-size (str (px width) " " (px height))
+                :transform-origin "left top"}}]]
      [:div.face.back
       {:style {:background-image (img (str book "/02.jpg"))
                :width (px width)
@@ -108,7 +109,8 @@
                  {:width (px width)
                   :height (px height)
                   :background-image (img (str book "/p01.jpg"))
-                  :background-size (str (px (* width 2)) " " (px height))}}]]))
+                  :background-size (str (px (* width 2)) " " (px height))
+                  :transform-origin "right bottom"}}]]))
           (range 0 2))]))
 
 (defn home-page []

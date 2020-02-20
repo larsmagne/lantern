@@ -74,28 +74,8 @@ a:hover {
   }
 }
 
-@keyframes popen {
-  0% {
-    transform: translateZ(33.025px) perspective(4000px) rotateY(-90deg);
-  }
-  50% {
-    transform: translateZ(33.025px)  perspective(4000px) rotateY(0deg);
-  }
-  100% {
-    transform: translateZ(33.025px)  perspective(4000px) rotateY(-90deg);
-  }
-}
-
-.front {
-  transform-origin: left top;
+.front, #page0 {
   animation-name: open;
   animation-iteration-count: infinite;
-  animation-duration: 5s;
-}
-
-#page0 {
-  transform-origin: right bottom;
-  animation-name: popen;
-  animation-iteration-count: infinite;
-  animation-duration: 5s;
+  animation-duration: 4s;
 }
