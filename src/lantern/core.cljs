@@ -14,6 +14,18 @@
          " -200px -200px"
          "")))
 
+(defn z [z]
+  (str "translateZ(" z "px)"))
+
+(defn x [x]
+  (str "rotateX(" x "deg)"))
+
+(defn y [y]
+  (str "rotateY(" y "deg)"))
+
+(defn trans [& elems]
+  (reduce str (interpose " " elems)))
+
 (defn make-book [[book spine-width pages]]
   (let [height 564
         width 348
@@ -67,7 +79,8 @@
                :transform (str "rotateX(-90deg) translateZ("
                                (px (/ height 2)) ")")}}]
      (map (fn [page]
-            (prn (img (str book "/p01.jpg") (- width)))
+            (prn (trans (z (- (/ spine-width 2) 0.1))
+                                          (x 180)))
             (if (odd? page)
               [:div.face
                {:key (str "page" page 1)
@@ -88,9 +101,8 @@
                {:key (str "page" page)
                 :style {:width (px width)
                         :height (px height)
-                        :transform (str "translateZ("
-                                        (px (- (/ spine-width 2) 0.1))
-                                        ") rotateX(180deg)")}}
+                        :transform (trans (z (- (/ spine-width 2) 0.1))
+                                          (x 180))}}
                [:div.face.page
                 {:id (str "page" page)
                  :style
