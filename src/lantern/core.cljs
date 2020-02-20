@@ -62,8 +62,18 @@
                :background-size (str (px width) " " (px spine-width))
                :top (px (- (/ height 2) (/ spine-width 2)))
                :transform (str "rotateX(-90deg) translateZ("
-                               (px (/ height 2)) ")")}}]]
-    ))
+                               (px (/ height 2)) ")")}}]
+     (map (fn [page]
+            [:div.face.page
+             {:id (str "page" page)
+              :key (str "page" page)
+              :style {:background-image (img (str book "/p01.jpg"))
+                      :width (px width)
+                      :height (px height)
+                      :background-size (str (px (* width 2)) " " (px height))
+                      :transform (str "translateZ("
+                                      (px (- (/ spine-width 2) 0.1)) ")")}}])
+          (range 0 1))]))
 
 (defn home-page []
   (let [bs (js->clj js/books)]
