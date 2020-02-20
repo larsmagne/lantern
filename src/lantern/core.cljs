@@ -15,7 +15,7 @@
   (let [height 564
         width 348
         spine-width (/ spine-width 4)]
-    (prn book)
+    (prn [book spine-width pages])
     [:div.book
      [:div.face.front
       {:style {:background-image (img (str book "/01.jpg"))
