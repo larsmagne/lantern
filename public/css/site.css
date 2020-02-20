@@ -90,13 +90,13 @@ a:hover {
 
 @keyframes popen {
   0% {
-    transform: perspective(4000px) rotateY(90deg);
+    transform: perspective(4000px) rotateY(-90deg);
   }
   50% {
     transform: perspective(4000px) rotateY(0deg);
   }
   100% {
-    transform: perspective(4000px) rotateY(90deg);
+    transform: perspective(4000px) rotateY(-90deg);
   }
 }
 
@@ -108,7 +108,7 @@ a:hover {
 }
 
 #page0 {
-  transform-origin: left top;
+  transform-origin: right bottom;
   animation-name: popen;
   animation-iteration-count: infinite;
   animation-duration: 5s;

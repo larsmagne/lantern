@@ -14,7 +14,7 @@
          " -200px -200px"
          "")))
 
-(defn z [z]
+(defn tz [z]
   (str "translateZ(" z "px)"))
 
 (defn x [x]
@@ -22,6 +22,9 @@
 
 (defn y [y]
   (str "rotateY(" y "deg)"))
+
+(defn z [z]
+  (str "rotateZ(" z "deg)"))
 
 (defn trans [& elems]
   (reduce str (interpose " " elems)))
@@ -79,8 +82,6 @@
                :transform (str "rotateX(-90deg) translateZ("
                                (px (/ height 2)) ")")}}]
      (map (fn [page]
-            (prn (trans (z (- (/ spine-width 2) 0.1))
-                                          (x 180)))
             (if (odd? page)
               [:div.face
                {:key (str "page" page 1)
@@ -101,7 +102,8 @@
                {:key (str "page" page)
                 :style {:width (px width)
                         :height (px height)
-                        :transform (trans (z (- (/ spine-width 2) 0.1))
+                        :transform (trans (z 180)
+                                          (tz (- (/ spine-width 2) 0.1))
                                           (x 180))}}
                [:div.face.page
                 {:id (str "page" page)
