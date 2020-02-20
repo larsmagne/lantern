@@ -8,8 +8,11 @@
 (defn px [number]
   (str number "px"))
 
-(defn img [image]
-  (str "url(https://quimby.gnus.org/circus/lanterne/" image ")"))
+(defn img [image & offset]
+  (str "url('https://quimby.gnus.org/circus/lanterne/" image "')"
+       (if offset
+         " -200px -200px"
+         "")))
 
 (defn make-book [[book spine-width pages]]
   (let [height 564
@@ -64,16 +67,38 @@
                :transform (str "rotateX(-90deg) translateZ("
                                (px (/ height 2)) ")")}}]
      (map (fn [page]
-            [:div.face.page
-             {:id (str "page" page)
-              :key (str "page" page)
-              :style {:background-image (img (str book "/p01.jpg"))
-                      :width (px width)
-                      :height (px height)
-                      :background-size (str (px (* width 2)) " " (px height))
-                      :transform (str "translateZ("
-                                      (px (- (/ spine-width 2) 0.1)) ")")}}])
-          (range 0 1))]))
+            (prn (img (str book "/p01.jpg") (- width)))
+            (if (odd? page)
+              [:div.face
+               {:key (str "page" page 1)
+                :style {:width (px width)
+                        :height (px height)
+                        :transform (str "translateZ("
+                                        (px (- (/ spine-width 2) 0.2))
+                                        ") rotateX(0deg)")}}
+               [:div.face.page
+                {:id (str "page" page 1)
+                 :style
+                 {:width (px width)
+                  :height (px height)
+                  :background-image (img (str book "/p01.jpg"))
+                  :background-size (str (px (* width 2)) " " (px height))
+                  :background-position (str (px (- width)) " " (px height))}}]]
+              [:div.face
+               {:key (str "page" page)
+                :style {:width (px width)
+                        :height (px height)
+                        :transform (str "translateZ("
+                                        (px (- (/ spine-width 2) 0.1))
+                                        ") rotateX(180deg)")}}
+               [:div.face.page
+                {:id (str "page" page)
+                 :style
+                 {:width (px width)
+                  :height (px height)
+                  :background-image (img (str book "/p01.jpg"))
+                  :background-size (str (px (* width 2)) " " (px height))}}]]))
+          (range 0 2))]))
 
 (defn home-page []
   (let [bs (js->clj js/books)]
