@@ -38,8 +38,7 @@
      [:div.face
       {:style {:width (px width)
                :height (px height)
-               :transform (str "rotateY(0deg) translateZ("
-                               (px (/ spine-width 2)) ")")}}
+               :transform (trans (y 0) (tz (/ spine-width 2)))}}
       [:div.face.front
        {:style {:background-image (img (str book "/01.jpg"))
                 :width (px width)
@@ -50,49 +49,43 @@
                :width (px width)
                :height (px height)
                :background-size (str (px width) " " (px height))
-               :transform (str "rotateY(180deg) translateZ("
-                               (px (/ spine-width 2)) ")")}}]
+               :transform (trans (y 180) (tz (/ spine-width 2)))}}]
      [:div.face.left
       {:style {:background-image (img (str book "/03.jpg"))
                :width (px spine-width)
                :height (px height)
                :background-size (str (px spine-width) " " (px height))
                :left (px (- (/ width 2) (/ spine-width 2)))
-               :transform (str "rotateY(-90deg) translateZ("
-                               (px (/ width 2)) ")")}}]
+               :transform (trans (y -90) (tz (/ width 2)))}}]
      [:div.face.right
       {:style {:background-image (img "pages/01.jpg")
                :width (px spine-width)
                :height (px height)
                :background-size (str (px spine-width) " " (px height))
                :left (px (- (/ width 2) (/ spine-width 2)))
-               :transform (str "rotateY(90deg) translateZ("
-                               (px (/ width 2)) ")")}}]
+               :transform (trans (y 90) (tz (/ width 2)))}}]
      [:div.face.top
       {:style {:background-image (img "pages/02-rot.jpg")
                :width (px width)
                :height (px spine-width)
                :background-size (str (px width) " " (px spine-width))
                :top (px (- (/ height 2) (/ spine-width 2)))
-               :transform (str "rotateX(90deg) translateZ("
-                               (px (/ height 2)) ")")}}]
+               :transform (trans (x 90) (tz (/ height 2)))}}]
      [:div.face.bottom
       {:style {:background-image (img "pages/03-rot.jpg")
                :width (px width)
                :height (px spine-width)
                :background-size (str (px width) " " (px spine-width))
                :top (px (- (/ height 2) (/ spine-width 2)))
-               :transform (str "rotateX(-90deg) translateZ("
-                               (px (/ height 2)) ")")}}]
+               :transform (trans (x -90) (tz (/ height 2)))}}]
      (map (fn [page]
             (if (odd? page)
               [:div.face
                {:key (str "page" page 1)
                 :style {:width (px width)
                         :height (px height)
-                        :transform (str "translateZ("
-                                        (px (- (/ spine-width 2) 0.2))
-                                        ") rotateX(0deg)")}}
+                        :transform (trans (tz (- (/ spine-width 2) 0.2))
+                                          (x 0))}}
                [:div.face.page
                 {:id (str "page" page 1)
                  :style
