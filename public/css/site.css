@@ -90,13 +90,13 @@ a:hover {
 
 @keyframes popen {
   0% {
-    transform: perspective(4000px) rotateY(-90deg);
+    transform: translateZ(33.025px) perspective(4000px) rotateY(-90deg);
   }
   50% {
-    transform: perspective(4000px) rotateY(0deg);
+    transform: translateZ(33.025px)  perspective(4000px) rotateY(0deg);
   }
   100% {
-    transform: perspective(4000px) rotateY(-90deg);
+    transform: translateZ(33.025px)  perspective(4000px) rotateY(-90deg);
   }
 }
 
