@@ -32,3 +32,44 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.face {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+@keyframes spinner {
+  0% {
+    transform: translateZ(-50px) rotateY(0deg) rotateX(0deg);
+  }
+  20% {
+    transform: translateZ(-100px) rotateY(170deg) rotateX(110deg);
+  }
+  40% {
+    transform: translateZ(-150px) rotateY(260deg) rotateX(160deg);
+  }
+  60% {
+    transform: translateZ(-100px) rotateY(450deg) rotateX(250deg);
+  }
+  80% {
+    transform: translateZ(-100px) rotateY(550deg) rotateX(310deg);
+  }
+  100% {
+    transform: translateZ(-50px) rotateY(720deg) rotateX(360deg);
+  }
+}
+
+.book {
+  width: 348px;
+  height: 564px;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.book {
+   animation-name: spinner;
+   animation-timing-function: linear;
+   animation-iteration-count: infinite;
+   animation-duration: 10s;
+}
