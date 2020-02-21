@@ -69,8 +69,7 @@ a:hover {
 }
 
 .see-front {
-  will-change: transform;
-  transition: all 3s;
+  transition: all 2s;
   transform-style: preserve-3d;
   transform: rotateY(0deg) rotateX(0deg) rotateZ(10deg) scale(1.5) !important;
 }
@@ -85,14 +84,12 @@ a:hover {
 
 
 .see-back {
-  will-change: transform;
   transition: all 1s;
   transform-style: preserve-3d;
-  transform: rotateY(0deg) rotateX(180deg) rotateZ(-190deg) scale(1.5) !important;
+  transform: rotateY(0deg) rotateX(180deg) rotateZ(-200deg) scale(1.5) !important;
 }
 
 .open-1, .open-2, .open-3, .open-4 {
-  will-change: transform;
   transition: all 2s;
   transform-style: preserve-3d;
   transform: rotateY(0deg) rotateX(0deg) rotateZ(-10deg) scale(1.5) translateX(300px) !important;
@@ -125,3 +122,15 @@ a:hover {
   transform: rotateY(-170deg) !important;
 }
 
+.normal {
+  transition: all 1s;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1) !important;
+}
+
+.closing div.front, .closing #page0, .closing #page1, .closing #page2,
+.closing #page3, .closing #page4, .closing #page5, .closing #page6 {
+  transition: all 5s;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg) !important;
+}

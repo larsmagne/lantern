@@ -86,9 +86,16 @@
         (.add (.-classList node) "open-3"))
       (= @state :open-3)
       (do
-        (reset! state :front)
+        (reset! state :spinning)
         (.remove (.-classList node) "open-3")
-        (.add (.-classList node) "see-front")))))
+        (.add (.-classList node) "normal")
+        (.add (.-classList node) "closing")
+        (js/setTimeout
+         (fn []
+           (set! (.-animationName style) "spinner-388")
+           (.remove (.-classList node) "normal"))
+         1000)
+        (js/setTimeout #(.remove (.-classList node) "closing") 5000)))))
 
 (defn make-book [[book spine-width pages]]
   (let [shrink 4
@@ -106,6 +113,46 @@
               :height (px height)}}
      ;; The spinner animation keyframes.
      [:style (make-keyframes book)]
+     ;; The interior pages.
+     (map (fn [page]
+            (let [pic (+ (Math.floor (/ page 2)) 1)]
+              (if (odd? page)
+                [:div.face
+                 {:key (str "page" page)
+                  :style
+                  {:width (px width)
+                   :height (px height)
+                   :transform (trans (tz (- (/ spine-width 2)
+                                            (+ (/ page 10) 0.1)))
+                                     (x 0))}}
+                 [:div.face.page
+                  {:id (str "page" page)
+                   :style
+                   {:width (px width)
+                    :height (px height)
+                    :background-image (img (str book "/p0" pic ".jpg"))
+                    :background-size (str (px (* width 2)) " " (px height))
+                    :transform-origin "left top"
+                    :background-position (str (px (- width)) " "
+                                              (px height))}}]]
+                ;; Even pages.
+                [:div.face
+                 {:key (str "page" page)
+                  :style {:width (px width)
+                          :height (px height)
+                          :transform (trans (z 180)
+                                            (tz (- (/ spine-width 2)
+                                                   (+ (/ page 10) 0.1)))
+                                            (x 180))}}
+                 [:div.face.page
+                  {:id (str "page" page)
+                   :style
+                   {:width (px width)
+                    :height (px height)
+                    :background-image (img (str book "/p0" pic ".jpg"))
+                    :background-size (str (px (* width 2)) " " (px height))
+                    :transform-origin "right bottom"}}]])))
+          (reverse (range 0 7)))
      [:div.face
       {:style {:width (px width)
                :height (px height)
@@ -149,46 +196,7 @@
                :height (px spine-width)
                :background-size (str (px width) " " (px spine-width))
                :top (px (- (/ height 2) (/ spine-width 2)))
-               :transform (trans (x -90) (tz (/ height 2)))}}]
-     (map (fn [page]
-            (let [pic (+ (Math.floor (/ page 2)) 1)]
-              (if (odd? page)
-                [:div.face
-                 {:key (str "page" page)
-                  :style
-                  {:width (px width)
-                   :height (px height)
-                   :transform (trans (tz (- (/ spine-width 2)
-                                            (+ (/ page 10) 0.1)))
-                                     (x 0))}}
-                 [:div.face.page
-                  {:id (str "page" page)
-                   :style
-                   {:width (px width)
-                    :height (px height)
-                    :background-image (img (str book "/p0" pic ".jpg"))
-                    :background-size (str (px (* width 2)) " " (px height))
-                    :transform-origin "left top"
-                    :background-position (str (px (- width)) " "
-                                              (px height))}}]]
-                ;; Even pages.
-                [:div.face
-                 {:key (str "page" page)
-                  :style {:width (px width)
-                          :height (px height)
-                          :transform (trans (z 180)
-                                            (tz (- (/ spine-width 2)
-                                                   (+ (/ page 10) 0.1)))
-                                            (x 180))}}
-                 [:div.face.page
-                  {:id (str "page" page)
-                   :style
-                   {:width (px width)
-                    :height (px height)
-                    :background-image (img (str book "/p0" pic ".jpg"))
-                    :background-size (str (px (* width 2)) " " (px height))
-                    :transform-origin "right bottom"}}]])))
-          (range 0 8))]))
+               :transform (trans (x -90) (tz (/ height 2)))}}]]))
 
 (defn home-page []
   (let [bs (js->clj js/books)]
