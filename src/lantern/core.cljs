@@ -205,9 +205,7 @@
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
-     (make-book (nth bs 2))
-     (make-book (nth bs 3))
-     (make-book (nth bs 4))]))
+     (make-book (nth bs 10))]))
 
 ;; -------------------------
 ;; Initialize app
