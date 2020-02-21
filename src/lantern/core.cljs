@@ -56,6 +56,7 @@
         width (/ 1392 shrink)
         spine-width (/ spine-width shrink)
         keyframes (make-keyframes book)
+        pic (+ (Math.floor (/ 0 2)) 1)
         node (.getElementById js/document "keyframes")]
     ;; Append new random keyframes for this book.
     (set! (.-innerHTML node) (str (.-innerHTML node) keyframes))
@@ -108,51 +109,48 @@
                :background-size (str (px width) " " (px spine-width))
                :top (px (- (/ height 2) (/ spine-width 2)))
                :transform (trans (x -90) (tz (/ height 2)))}}]
-     (map (fn [page]
-            (let [pic (+ (Math.floor (/ page 2)) 1)]
-              (if (odd? page)
-                [:div.face
-                 {:key (str "page" page 1)
-                  :style
-                  {:width (px width)
-                   :height (px height)
-                   :transform (trans (tz (- (/ spine-width 2)
-                                            (+ (/ page 10) 0.1)))
-                                     (x 0))}}
-                 [:div.face.page
-                  {:id (str "page" page 1)
-                   :style
-                   {:width (px width)
-                    :height (px height)
-                    :background-image (img (str book "/p0" pic ".jpg"))
-                    :background-size (str (px (* width 2)) " " (px height))
-                    :background-position (str (px (- width)) " "
-                                              (px height))}}]]
-                ;; Odd pages.
-                [:div.face
-                 {:key (str "page" page)
-                  :style {:width (px width)
-                          :height (px height)
-                          :transform (trans (z 180)
-                                            (tz (- (/ spine-width 2)
-                                                   (+ (/ page 10) 0.1)))
-                                            (x 180))}}
-                 [:div.face.page
-                  {:id (str "page" page)
-                   :style
-                   {:width (px width)
-                    :height (px height)
-                    :background-image (img (str book "/p0" pic ".jpg"))
-                    :background-size (str (px (* width 2)) " " (px height))
-                    :transform-origin "right bottom"}}]])))
-          (range 0 2))]))
+
+     ;; Page 1
+     [:div.face
+      {:key "page1"
+       :style {:width (px width)
+               :height (px height)
+               :transform (trans (tz (- (/ spine-width 2)
+                                        (+ (/ 3 10) 0.1)))
+                                 (x 0))}}
+      [:div.face.page
+       {:id "page1"
+        :style
+        {:width (px width)
+         :height (px height)
+         :background-image (img (str book "/p0" pic ".jpg"))
+         :background-size (str (px (* width 2)) " " (px height))
+         :background-position (str (px (- width)) " "
+                                   (px height))}}]]
+     [:div.face
+      {:key "page0"
+       :style {:width (px width)
+               :height (px height)
+               :transform (trans (z 180)
+                                 (tz (- (/ spine-width 2)
+                                        (+ (/ 3 10) 0.1)))
+                                 (x 180))}}
+      ;; Page 0
+      [:div.face.page
+       {:id "page0"
+        :style
+        {:width (px width)
+         :height (px height)
+         :background-image (img (str book "/p0" pic ".jpg"))
+         :background-size (str (px (* width 2)) " " (px height))
+         :transform-origin "right bottom"}}]]]))
 
 (defn home-page []
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
      (make-book (nth bs 0))
-     (make-book (nth bs 2))]))
+     (make-book (nth bs 3))]))
 
 ;; -------------------------
 ;; Initialize app
