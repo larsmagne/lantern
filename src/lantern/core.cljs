@@ -53,21 +53,12 @@
 (defn read-book [id state]
   (let [node (.getElementById js/document id)
         style (.-style node)]
-    (prn (js/window.getComputedStyle node))
-    (prn (.-style (js/window.getComputedStyle node)))
-    (prn (js/window.getRotation node))
-    (prn (.-cssText style))
-    (prn (.-classList node))
-    ;;(prn (.-classList node))    
-    ;;(set! (.-animationPlayState style) "paused")
+    ;; Set the current animation 3d transform so we have something to
+    ;; transition from.
     (set! (.-transform style) (js/window.getRotation node))
-    ;;(set! (.-animationDuration style) "5s")
     (set! (.-animationName style) "")
     ;; Chrome needs to do a reflow before adding the transition class.
-    (js/setTimeout
-     (fn []
-       (.add (.-classList node) "see-front"))
-     10)))
+    (js/setTimeout #(.add (.-classList node) "see-front") 10)))
 
 (defn make-book [[book spine-width pages]]
   (let [shrink 4
