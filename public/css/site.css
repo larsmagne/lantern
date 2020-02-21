@@ -68,8 +68,9 @@ a:hover {
   }
 }
 
-.front, #page0 {
-  animation-name: open;
-  animation-iteration-count: infinite;
-  animation-duration: 4s;
+.see-front {
+  will-change: transform;
+  transition: all 3s;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg) rotateX(0deg) rotateZ(10deg) scale(1.5) !important;
 }

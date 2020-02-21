@@ -50,16 +50,40 @@
             (list "100% { transform: translateZ(-50px) rotateY(360deg) rotateX(360deg) rotateZ(360deg); }}"))
            (str "@keyframes spinner-" name " { 0% { transform: translateZ(-50px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "))))                     
 
+(defn read-book [id state]
+  (let [node (.getElementById js/document id)
+        style (.-style node)]
+    (prn (js/window.getComputedStyle node))
+    (prn (.-style (js/window.getComputedStyle node)))
+    (prn (js/window.getRotation node))
+    (prn (.-cssText style))
+    (prn (.-classList node))
+    ;;(prn (.-classList node))    
+    ;;(set! (.-animationPlayState style) "paused")
+    (set! (.-transform style) (js/window.getRotation node))
+    ;;(set! (.-animationDuration style) "5s")
+    (set! (.-animationName style) "")
+    ;; Chrome needs to do a reflow before adding the transition class.
+    (js/setTimeout
+     (fn []
+       (.add (.-classList node) "see-front"))
+     10)))
+
 (defn make-book [[book spine-width pages]]
   (let [shrink 4
         height (/ 2256 shrink)
         width (/ 1392 shrink)
-        spine-width (/ spine-width shrink)]
+        spine-width (/ spine-width shrink)
+        state (r/atom :spinning)
+        id (str "book" book)]
     [:div.book
-     {:style {:animation-duration (str (+ (rand 10) 5) "s")
+     {:on-click #(read-book id state)
+      :id id
+      :style {:animation-duration (str (+ (rand 10) 5) "s")
               :animation-name (str "spinner-" book)
               :width (px width)
               :height (px height)}}
+     ;; The spinner animation keyframes.
      [:style (make-keyframes book)]
      [:div.face
       {:style {:width (px width)
@@ -148,7 +172,6 @@
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
-     (make-book (nth bs 0))
      (make-book (nth bs 2))]))
 
 ;; -------------------------
