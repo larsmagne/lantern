@@ -92,7 +92,8 @@
         (.add (.-classList node) "closing")
         (js/setTimeout
          (fn []
-           (set! (.-animationName style) "spinner-388")
+           (when (= (.-animationName style) "")
+             (set! (.-animationName style) "spinner-388"))
            (.remove (.-classList node) "normal"))
          1000)
         (js/setTimeout #(.remove (.-classList node) "closing") 5000)))))
