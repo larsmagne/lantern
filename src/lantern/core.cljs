@@ -50,7 +50,7 @@
             (list "100% { transform: translateZ(-50px) rotateY(360deg) rotateX(360deg) rotateZ(360deg); }}"))
            (str "@keyframes spinner-" name " { 0% { transform: translateZ(-50px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "))))                     
 
-(defn read-book [id state]
+(defn read-book [book id state]
   (let [node (.getElementById js/document id)
         style (.-style node)]
     (prn state)
@@ -93,7 +93,7 @@
         (js/setTimeout
          (fn []
            (when (= (.-animationName style) "")
-             (set! (.-animationName style) "spinner-388"))
+             (set! (.-animationName style) (str "spinner-" book)))
            (.remove (.-classList node) "normal"))
          1000)
         (js/setTimeout #(.remove (.-classList node) "closing") 5000)))))
@@ -106,7 +106,7 @@
         state (r/atom :spinning)
         id (str "book" book)]
     [:div.book
-     {:on-click #(read-book id state)
+     {:on-click #(read-book book id state)
       :id id
       :style {:animation-duration (str (+ (rand 10) 5) "s")
               :animation-name (str "spinner-" book)

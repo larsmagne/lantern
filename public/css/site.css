@@ -107,6 +107,12 @@ a:hover {
   transform: rotateY(-170deg) !important;
 }
 
+.open-2 #page2 {
+  transition: all 2s;
+  transform-style: preserve-3d;
+  transform: rotateY(-165deg) !important;
+}
+
 .open-3 div.front, .open-3 #page0, .open-3 #page1, .open-3 #page2,
 .open-3 #page3, .open-3 #page4 {
   transition: all 2s;
@@ -114,13 +120,12 @@ a:hover {
   transform: rotateY(-170deg) !important;
 }
 
-
-.open-4 div.front, .open-4 #page0, .open-4 #page1, .open-4 #page2,
-.open-4 #page3, .open-4 #page4, .open-4 #page5, .open-4 #page6 {
+.open-3 #page4 {
   transition: all 2s;
   transform-style: preserve-3d;
-  transform: rotateY(-170deg) !important;
+  transform: rotateY(-160deg) !important;
 }
+
 
 .normal {
   transition: all 1s;
