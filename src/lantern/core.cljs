@@ -104,6 +104,8 @@
         width (/ 1392 shrink)
         spine-width (/ spine-width shrink)
         state (r/atom :spinning)
+        ears (js->clj js/earses)
+        ear (nth ears (rand (count ears)))
         id (str "book" book)]
     [:div.book
      {:on-click #(read-book book id state)
@@ -178,21 +180,21 @@
                :left (px (- (/ width 2) (/ spine-width 2)))
                :transform (trans (y -90) (tz (/ width 2)))}}]
      [:div.face.right
-      {:style {:background-image (img "pages/01.jpg")
+      {:style {:background-image (img (str "pages/" ear "/01.jpg"))
                :width (px spine-width)
                :height (px height)
                :background-size (str (px spine-width) " " (px height))
                :left (px (- (/ width 2) (/ spine-width 2)))
                :transform (trans (y 90) (tz (/ width 2)))}}]
      [:div.face.top
-      {:style {:background-image (img "pages/02-rot.jpg")
+      {:style {:background-image (img (str "pages/" ear "/02.jpg"))
                :width (px width)
                :height (px spine-width)
                :background-size (str (px width) " " (px spine-width))
                :top (px (- (/ height 2) (/ spine-width 2)))
                :transform (trans (x 90) (tz (/ height 2)))}}]
      [:div.face.bottom
-      {:style {:background-image (img "pages/03-rot.jpg")
+      {:style {:background-image (img (str "pages/" ear "/03.jpg"))
                :width (px width)
                :height (px spine-width)
                :background-size (str (px width) " " (px spine-width))
@@ -203,7 +205,9 @@
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
-     (make-book (nth bs 2))]))
+     (make-book (nth bs 2))
+     (make-book (nth bs 3))
+     (make-book (nth bs 4))]))
 
 ;; -------------------------
 ;; Initialize app
