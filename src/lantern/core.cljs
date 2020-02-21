@@ -53,12 +53,42 @@
 (defn read-book [id state]
   (let [node (.getElementById js/document id)
         style (.-style node)]
-    ;; Set the current animation 3d transform so we have something to
-    ;; transition from.
-    (set! (.-transform style) (js/window.getRotation node))
-    (set! (.-animationName style) "")
-    ;; Chrome needs to do a reflow before adding the transition class.
-    (js/setTimeout #(.add (.-classList node) "see-front") 10)))
+    (prn state)
+    (cond
+      (= @state :spinning)
+      (do
+        ;; Set the current animation 3d transform so we have something to
+        ;; transition from.
+        (set! (.-transform style) (js/window.getRotation node))
+        (set! (.-animationName style) "")
+        (reset! state :front)
+        ;; Chrome needs to do a reflow before adding the transition class.
+        (js/setTimeout #(.add (.-classList node) "see-front") 10))
+      (= @state :front)
+      (do
+        (reset! state :back)
+        (.remove (.-classList node) "see-front")
+        (.add (.-classList node) "see-back"))
+      (= @state :back)
+      (do
+        (reset! state :open-1)
+        (.remove (.-classList node) "see-back")
+        (.add (.-classList node) "open-1"))
+      (= @state :open-1)
+      (do
+        (reset! state :open-2)
+        (.remove (.-classList node) "open-1")
+        (.add (.-classList node) "open-2"))
+      (= @state :open-2)
+      (do
+        (reset! state :open-3)
+        (.remove (.-classList node) "open-2")
+        (.add (.-classList node) "open-3"))
+      (= @state :open-3)
+      (do
+        (reset! state :front)
+        (.remove (.-classList node) "open-3")
+        (.add (.-classList node) "see-front")))))
 
 (defn make-book [[book spine-width pages]]
   (let [shrink 4
@@ -124,7 +154,7 @@
             (let [pic (+ (Math.floor (/ page 2)) 1)]
               (if (odd? page)
                 [:div.face
-                 {:key (str "page" page 1)
+                 {:key (str "page" page)
                   :style
                   {:width (px width)
                    :height (px height)
@@ -132,15 +162,16 @@
                                             (+ (/ page 10) 0.1)))
                                      (x 0))}}
                  [:div.face.page
-                  {:id (str "page" page 1)
+                  {:id (str "page" page)
                    :style
                    {:width (px width)
                     :height (px height)
                     :background-image (img (str book "/p0" pic ".jpg"))
                     :background-size (str (px (* width 2)) " " (px height))
+                    :transform-origin "left top"
                     :background-position (str (px (- width)) " "
                                               (px height))}}]]
-                ;; Odd pages.
+                ;; Even pages.
                 [:div.face
                  {:key (str "page" page)
                   :style {:width (px width)
@@ -157,7 +188,7 @@
                     :background-image (img (str book "/p0" pic ".jpg"))
                     :background-size (str (px (* width 2)) " " (px height))
                     :transform-origin "right bottom"}}]])))
-          (range 0 2))]))
+          (range 0 8))]))
 
 (defn home-page []
   (let [bs (js->clj js/books)]

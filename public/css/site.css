@@ -74,3 +74,54 @@ a:hover {
   transform-style: preserve-3d;
   transform: rotateY(0deg) rotateX(0deg) rotateZ(10deg) scale(1.5) !important;
 }
+
+.see-front div.front, .see-front #page0, .see-front #page1, .see-front #page2,
+.see-front #page3, .see-front #page4, .see-front #page5, .see-front #page6 {
+  transition: all 2s;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg) !important;
+}
+
+
+
+.see-back {
+  will-change: transform;
+  transition: all 1s;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg) rotateX(180deg) rotateZ(-190deg) scale(1.5) !important;
+}
+
+.open-1, .open-2, .open-3, .open-4 {
+  will-change: transform;
+  transition: all 2s;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg) rotateX(0deg) rotateZ(-10deg) scale(1.5) translateX(300px) !important;
+}
+
+.open-1 div.front, .open-1 #page0 {
+  transition: all 2s;
+  transform-style: preserve-3d;
+  transform: rotateY(-170deg) !important;
+}
+
+.open-2 div.front, .open-2 #page0, .open-2 #page1, .open-2 #page2 {
+  transition: all 2s;
+  transform-style: preserve-3d;
+  transform: rotateY(-170deg) !important;
+}
+
+.open-3 div.front, .open-3 #page0, .open-3 #page1, .open-3 #page2,
+.open-3 #page3, .open-3 #page4 {
+  transition: all 2s;
+  transform-style: preserve-3d;
+  transform: rotateY(-170deg) !important;
+}
+
+
+.open-4 div.front, .open-4 #page0, .open-4 #page1, .open-4 #page2,
+.open-4 #page3, .open-4 #page4, .open-4 #page5, .open-4 #page6 {
+  transition: all 2s;
+  transform-style: preserve-3d;
+  transform: rotateY(-170deg) !important;
+}
+
