@@ -86,7 +86,7 @@ a:hover {
 .see-back {
   transition: all 1s;
   transform-style: preserve-3d;
-  transform: rotateY(0deg) rotateX(180deg) rotateZ(-200deg) scale(1.5) !important;
+  transform: rotateZ(-200deg) rotateY(0deg) rotateX(180deg) scale(1.5) !important;
 }
 
 .open-1, .open-2, .open-3, .open-4 {
