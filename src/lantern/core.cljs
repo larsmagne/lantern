@@ -54,16 +54,13 @@
   (let [shrink 4
         height (/ 2256 shrink)
         width (/ 1392 shrink)
-        spine-width (/ spine-width shrink)
-        keyframes (make-keyframes book)
-        node (.getElementById js/document "keyframes")]
-    ;; Append new random keyframes for this book.
-    (set! (.-innerHTML node) (str (.-innerHTML node) keyframes))
+        spine-width (/ spine-width shrink)]
     [:div.book
      {:style {:animation-duration (str (+ (rand 10) 5) "s")
               :animation-name (str "spinner-" book)
               :width (px width)
               :height (px height)}}
+     [:style (make-keyframes book)]
      [:div.face
       {:style {:width (px width)
                :height (px height)
