@@ -109,37 +109,42 @@
                :top (px (- (/ height 2) (/ spine-width 2)))
                :transform (trans (x -90) (tz (/ height 2)))}}]
      (map (fn [page]
-            (if (odd? page)
-              [:div.face
-               {:key (str "page" page 1)
-                :style {:width (px width)
-                        :height (px height)
-                        :transform (trans (tz (- (/ spine-width 2) 0.2))
-                                          (x 0))}}
-               [:div.face.page
-                {:id (str "page" page 1)
-                 :style
-                 {:width (px width)
-                  :height (px height)
-                  :background-image (img (str book "/p01.jpg"))
-                  :background-size (str (px (* width 2)) " " (px height))
-                  :background-position (str (px (- width)) " " (px height))}}]]
-              ;; Odd pages.
-              [:div.face
-               {:key (str "page" page)
-                :style {:width (px width)
-                        :height (px height)
-                        :transform (trans (z 180)
-                                          (tz (- (/ spine-width 2) 0.1))
-                                          (x 180))}}
-               [:div.face.page
-                {:id (str "page" page)
-                 :style
-                 {:width (px width)
-                  :height (px height)
-                  :background-image (img (str book "/p01.jpg"))
-                  :background-size (str (px (* width 2)) " " (px height))
-                  :transform-origin "right bottom"}}]]))
+            (let [pic (+ (Math.floor (/ page 2)) 1)]
+              (if (odd? page)
+                [:div.face
+                 {:key (str "page" page 1)
+                  :style
+                  {:width (px width)
+                   :height (px height)
+                   :transform (trans (tz (- (/ spine-width 2)
+                                            (+ (/ page 10) 0.1)))
+                                     (x 0))}}
+                 [:div.face.page
+                  {:id (str "page" page 1)
+                   :style
+                   {:width (px width)
+                    :height (px height)
+                    :background-image (img (str book "/p0" pic ".jpg"))
+                    :background-size (str (px (* width 2)) " " (px height))
+                    :background-position (str (px (- width)) " "
+                                              (px height))}}]]
+                ;; Odd pages.
+                [:div.face
+                 {:key (str "page" page)
+                  :style {:width (px width)
+                          :height (px height)
+                          :transform (trans (z 180)
+                                            (tz (- (/ spine-width 2)
+                                                   (+ (/ page 10) 0.1)))
+                                            (x 180))}}
+                 [:div.face.page
+                  {:id (str "page" page)
+                   :style
+                   {:width (px width)
+                    :height (px height)
+                    :background-image (img (str book "/p0" pic ".jpg"))
+                    :background-size (str (px (* width 2)) " " (px height))
+                    :transform-origin "right bottom"}}]])))
           (range 0 2))]))
 
 (defn home-page []
