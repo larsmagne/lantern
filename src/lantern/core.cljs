@@ -122,7 +122,8 @@
      (str id "cont")
      [:div.book-container {:id (str id "cont")}
       [:div.book
-       {:on-click #(read-book book id state)
+       {:on-click (if spines-only nil
+                      #(read-book book id state))
         :id id
         :style {;;:animation-duration (str (+ (rand 10) 5) "s")
                 :transform (trans (y 90)
@@ -287,13 +288,8 @@
                                                    (/ width 8 2)))))
                     (remove-class id "take-out-slide")
                     (prn "here")))]
-    (let [[images book-id html] (make-book [book width 8])]
-      (r/render (wait-for-images
-                 [images book-id html]
-                 (fn []
-                   (prn "here we are then")))
-                (.getElementById js/document id))
-      (add-class book-id "take-out-slide"))))
+    (prn (.getElementById js/document (str "book" book)))
+    (add-class (str "book" book) "take-out-slide")))
 
 (defn make-library [books]
   (let [shrink 8]
