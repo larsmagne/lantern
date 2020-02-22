@@ -1,16 +1,20 @@
 (ns lantern.core
     (:require
-      [reagent.core :as r]))
+     [reagent.core :as r]
+     [cljs.reader :refer [read-string]]))
 
-;; -------------------------
-;; Views
-
+(defn add-class [id class]
+  (.add (.-classList (.getElementById js/document id))
+        class))
 
 (defn px [number]
   (str number "px"))
 
+(defn image-url [string]
+  (str "https://quimby.gnus.org/circus/lanterne/" string))
+
 (defn img [images image]
-  (let [url (str "https://quimby.gnus.org/circus/lanterne/" image)]
+  (let [url (image-url image)]
     ;; Save images so that we can later check that they loaded.
     (when images
       (swap! images conj {url :new}))
@@ -226,22 +230,48 @@
                     :src url}])
            @images)]]))
 
-(defn make-spin []
+(defn spinning []
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
      (wait-for-images (make-book (nth bs 43)))]))
 
-(defn make-library []
+(def take-outs (r/atom '()))
+
+(defn take-out-library-book [id book width]
+  (prn id)
+  (swap! take-outs conj (wait-for-images (make-book [book width 8]))))
+
+(defn make-library [books]
+  (let [shrink 8]
+    [:div.library
+     (map (fn [[book width _]]
+            (let [id (str "library-book-" book)]
+              [:div.library-book {:key book
+                                  :on-click #(take-out-library-book
+                                              id book width)
+                                  :id id}
+               [:img {:on-load (fn []
+                                 (add-class id "fade-in"))
+                      :src (image-url (str book "/03.jpg"))
+                      :width (/ width shrink)
+                      :height (/ 2256 shrink)}]]))
+          (sort #(compare (read-string (first %1))
+                          (read-string (first %2)))
+                books))]))
+
+(defn library []
   (let [bs (js->clj js/books)]
     [:div
-     [:h2 "Library"]]))
+     [:h2 "Library"]
+     (make-library bs)
+     [:div.take-out @take-outs]]))
 
 ;; -------------------------
 ;; Initialize app
 
 (defn mount-root []
-  (r/render [make-library] (.getElementById js/document "app")))
+  (r/render [library] (.getElementById js/document "app")))
 
 (defn init! []
   (mount-root))
