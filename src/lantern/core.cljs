@@ -267,7 +267,8 @@
      (make-library bs)
      [:div.take-outs
       (map (fn [[book _ _]]
-             [:div.take-out {:id (str "take-out-" book)}])
+             [:div.take-out {:id (str "take-out-" book)
+                             :key (str "take-out-" book)}])
            bs)]]))
 
 ;; -------------------------
