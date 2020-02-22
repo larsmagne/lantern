@@ -107,7 +107,7 @@
          1000)
         (js/setTimeout #(.remove (.-classList node) "closing") 5000)))))
 
-(defn make-book [[book spine-width pages]]
+(defn make-book [[book spine-width pages spines-only]]
   (let [images (atom {})
         shrink 4
         height (/ 2256 shrink)
@@ -124,7 +124,13 @@
       [:div.book
        {:on-click #(read-book book id state)
         :id id
-        :style {:animation-duration (str (+ (rand 10) 5) "s")
+        :style {;;:animation-duration (str (+ (rand 10) 5) "s")
+                :transform (trans (y 90)
+                                  (x 5)
+                                  (str "translateZ("
+                                       (/ spine-width shrink) "px)")
+                                  (str " scale(" (/ 1 2) ")")
+                                  (str " scaleZ(" (/ 1 2) ")"))
                 ;;:animation-name (str "spinner-" book)
                 }}
        ;; The spinner animation keyframes.
@@ -147,8 +153,10 @@
                       :style
                       {:width (px width)
                        :height (px height)
-                       :background-image (img images
-                                              (str book "/p0" pic ".jpg"))
+                       :background-image (if spines-only
+                                           nil
+                                           (img images
+                                                (str book "/p0" pic ".jpg")))
                        :background-size (str (px (* width 2)) " " (px height))
                        :transform-origin "left top"
                        :background-position (str (px (- width)) " "
@@ -167,8 +175,10 @@
                       :style
                       {:width (px width)
                        :height (px height)
-                       :background-image (img images
-                                              (str book "/p0" pic ".jpg"))
+                       :background-image (if spines-only
+                                           nil
+                                           (img images
+                                                (str book "/p0" pic ".jpg")))
                        :background-size (str (px (* width 2)) " " (px height))
                        :transform-origin "right bottom"}}]])))
              (reverse (range 0 7))))
@@ -177,13 +187,17 @@
                  :height (px height)
                  :transform (trans (y 0) (tz (/ spine-width 2)))}}
         [:div.face.front
-         {:style {:background-image (img images (str book "/01.jpg"))
+         {:style {:background-image (if spines-only
+                                      nil
+                                      (img images (str book "/01.jpg")))
                   :width (px width)
                   :height (px height)
                   :background-size (str (px width) " " (px height))
                   :transform-origin "left top"}}]]
        [:div.face.back
-        {:style {:background-image (img images (str book "/02.jpg"))
+        {:style {:background-image (if spines-only
+                                     nil
+                                     (img images (str book "/02.jpg")))
                  :width (px width)
                  :height (px height)
                  :background-size (str (px width) " " (px height))
@@ -196,21 +210,27 @@
                  :left (px (- (/ width 2) (/ spine-width 2)))
                  :transform (trans (y -90) (tz (/ width 2)))}}]
        [:div.face.right
-        {:style {:background-image (img images (str "pages/" ear "/01.jpg"))
+        {:style {:background-image (if spines-only
+                                     nil
+                                     (img images (str "pages/" ear "/01.jpg")))
                  :width (px spine-width)
                  :height (px height)
                  :background-size (str (px spine-width) " " (px height))
                  :left (px (- (/ width 2) (/ spine-width 2)))
                  :transform (trans (y 90) (tz (/ width 2)))}}]
        [:div.face.top
-        {:style {:background-image (img images (str "pages/" ear "/02.jpg"))
+        {:style {:background-image (if spines-only
+                                     nil
+                                     (img images (str "pages/" ear "/02.jpg")))
                  :width (px width)
                  :height (px spine-width)
                  :background-size (str (px width) " " (px spine-width))
                  :top (px (- (/ height 2) (/ spine-width 2)))
                  :transform (trans (x 90) (tz (/ height 2)))}}]
        [:div.face.bottom
-        {:style {:background-image (img images (str "pages/" ear "/03.jpg"))
+        {:style {:background-image (if spines-only
+                                     nil
+                                     (img images (str "pages/" ear "/03.jpg")))
                  :width (px width)
                  :height (px spine-width)
                  :background-size (str (px width) " " (px spine-width))
@@ -267,24 +287,34 @@
                                                    (/ width 8 2)))))
                     (remove-class id "take-out-slide")
                     (prn "here")))]
-    (add-class id "take-out-slide")
-    (r/render (wait-for-images (make-book [book width 8]) display)
-              (.getElementById js/document (str "take-out-" book)))))
+    (let [[images book-id html] (make-book [book width 8])]
+      (r/render (wait-for-images
+                 [images book-id html]
+                 (fn []
+                   (prn "here we are then")))
+                (.getElementById js/document id))
+      (add-class book-id "take-out-slide"))))
 
 (defn make-library [books]
   (let [shrink 8]
     [:div.library
-     (map (fn [[book width _]]
-            (let [id (str "library-book-" book)]
+     (map (fn [[book width pages]]
+            (let [id (str "library-book-" book)
+                  [images book-id html] (make-book [book width pages true])]
               [:div.library-book {:key book
                                   :on-click #(take-out-library-book
                                               id book width)
-                                  :id id}
-               [:img {:on-load (fn []
-                                 (add-class id "fade-in"))
-                      :src (image-url (str book "/03.jpg"))
-                      :width (/ width shrink)
-                      :height (/ 2256 shrink)}]]))
+                                  :id id
+                                  :style {:width (px (+ (/ width 8) 1))
+                                          :height (px (/ 2256 8))}}
+               html
+               [:div {:style {:display "none"}}
+                (map (fn [[url state]]
+                       [:img {:key url
+                              :on-load (fn []
+                                         (add-class book-id "fade-in"))
+                              :src url}])
+                     @images)]]))
           (sort #(compare (read-string (first %1))
                           (read-string (first %2)))
                 books))
