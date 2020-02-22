@@ -111,102 +111,102 @@
         id (str "book" book)]
     (list
      images
-     id
-     [:div.book
-      {:on-click #(read-book book id state)
-       :id id
-       :style {:animation-duration (str (+ (rand 10) 5) "s")
-               :animation-name (str "spinner-" book)
-               :width (px width)
-               :opacity "0"
-               :height (px height)}}
-      ;; The spinner animation keyframes.
-      [:style (make-keyframes book)]
-      ;; The interior pages.
-      (doall
-       (map (fn [page]
-              (let [pic (Math.floor (/ page 2))]
-                (if (odd? page)
-                  [:div.face
-                   {:key (str "page" page)
-                    :style
-                    {:width (px width)
-                     :height (px height)
-                     :transform (trans (tz (- (/ spine-width 2)
-                                              (+ (/ page 10) 0.1)))
-                                       (x 0))}}
-                   [:div.face.page
-                    {:id (str "page" page)
+     (str id "cont")
+     [:div.book-container {:id (str id "cont")}
+      [:div.book
+       {:on-click #(read-book book id state)
+        :id id
+        :style {:animation-duration (str (+ (rand 10) 5) "s")
+                :animation-name (str "spinner-" book)
+                :width (px width)
+                :height (px height)}}
+       ;; The spinner animation keyframes.
+       [:style (make-keyframes book)]
+       ;; The interior pages.
+       (doall
+        (map (fn [page]
+               (let [pic (Math.floor (/ page 2))]
+                 (if (odd? page)
+                   [:div.face
+                    {:key (str "page" page)
                      :style
                      {:width (px width)
                       :height (px height)
-                      :background-image (img images (str book "/p0" pic ".jpg"))
-                      :background-size (str (px (* width 2)) " " (px height))
-                      :transform-origin "left top"
-                      :background-position (str (px (- width)) " "
-                                                (px height))}}]]
-                  ;; Even pages.
-                  [:div.face
-                   {:key (str "page" page)
-                    :style {:width (px width)
-                            :height (px height)
-                            :transform (trans (z 180)
-                                              (tz (- (/ spine-width 2)
-                                                     (+ (/ page 10) 0.1)))
-                                              (x 180))}}
-                   [:div.face.page
-                    {:id (str "page" page)
-                     :style
-                     {:width (px width)
-                      :height (px height)
-                      :background-image (img images (str book "/p0" pic ".jpg"))
-                      :background-size (str (px (* width 2)) " " (px height))
-                      :transform-origin "right bottom"}}]])))
-            (reverse (range 0 7))))
-      [:div.face
-       {:style {:width (px width)
-                :height (px height)
-                :transform (trans (y 0) (tz (/ spine-width 2)))}}
-       [:div.face.front
-        {:style {:background-image (img images (str book "/01.jpg"))
+                      :transform (trans (tz (- (/ spine-width 2)
+                                               (+ (/ page 10) 0.1)))
+                                        (x 0))}}
+                    [:div.face.page
+                     {:id (str "page" page)
+                      :style
+                      {:width (px width)
+                       :height (px height)
+                       :background-image (img images (str book "/p0" pic ".jpg"))
+                       :background-size (str (px (* width 2)) " " (px height))
+                       :transform-origin "left top"
+                       :background-position (str (px (- width)) " "
+                                                 (px height))}}]]
+                   ;; Even pages.
+                   [:div.face
+                    {:key (str "page" page)
+                     :style {:width (px width)
+                             :height (px height)
+                             :transform (trans (z 180)
+                                               (tz (- (/ spine-width 2)
+                                                      (+ (/ page 10) 0.1)))
+                                               (x 180))}}
+                    [:div.face.page
+                     {:id (str "page" page)
+                      :style
+                      {:width (px width)
+                       :height (px height)
+                       :background-image (img images (str book "/p0" pic ".jpg"))
+                       :background-size (str (px (* width 2)) " " (px height))
+                       :transform-origin "right bottom"}}]])))
+             (reverse (range 0 7))))
+       [:div.face
+        {:style {:width (px width)
+                 :height (px height)
+                 :transform (trans (y 0) (tz (/ spine-width 2)))}}
+        [:div.face.front
+         {:style {:background-image (img images (str book "/01.jpg"))
+                  :width (px width)
+                  :height (px height)
+                  :background-size (str (px width) " " (px height))
+                  :transform-origin "left top"}}]]
+       [:div.face.back
+        {:style {:background-image (img images (str book "/02.jpg"))
                  :width (px width)
                  :height (px height)
                  :background-size (str (px width) " " (px height))
-                 :transform-origin "left top"}}]]
-      [:div.face.back
-       {:style {:background-image (img images (str book "/02.jpg"))
-                :width (px width)
-                :height (px height)
-                :background-size (str (px width) " " (px height))
-                :transform (trans (y 180) (tz (/ spine-width 2)))}}]
-      [:div.face.left
-       {:style {:background-image (img images (str book "/03.jpg"))
-                :width (px spine-width)
-                :height (px height)
-                :background-size (str (px spine-width) " " (px height))
-                :left (px (- (/ width 2) (/ spine-width 2)))
-                :transform (trans (y -90) (tz (/ width 2)))}}]
-      [:div.face.right
-       {:style {:background-image (img images (str "pages/" ear "/01.jpg"))
-                :width (px spine-width)
-                :height (px height)
-                :background-size (str (px spine-width) " " (px height))
-                :left (px (- (/ width 2) (/ spine-width 2)))
-                :transform (trans (y 90) (tz (/ width 2)))}}]
-      [:div.face.top
-       {:style {:background-image (img images (str "pages/" ear "/02.jpg"))
-                :width (px width)
-                :height (px spine-width)
-                :background-size (str (px width) " " (px spine-width))
-                :top (px (- (/ height 2) (/ spine-width 2)))
-                :transform (trans (x 90) (tz (/ height 2)))}}]
-      [:div.face.bottom
-       {:style {:background-image (img images (str "pages/" ear "/03.jpg"))
-                :width (px width)
-                :height (px spine-width)
-                :background-size (str (px width) " " (px spine-width))
-                :top (px (- (/ height 2) (/ spine-width 2)))
-                :transform (trans (x -90) (tz (/ height 2)))}}]])))
+                 :transform (trans (y 180) (tz (/ spine-width 2)))}}]
+       [:div.face.left
+        {:style {:background-image (img images (str book "/03.jpg"))
+                 :width (px spine-width)
+                 :height (px height)
+                 :background-size (str (px spine-width) " " (px height))
+                 :left (px (- (/ width 2) (/ spine-width 2)))
+                 :transform (trans (y -90) (tz (/ width 2)))}}]
+       [:div.face.right
+        {:style {:background-image (img images (str "pages/" ear "/01.jpg"))
+                 :width (px spine-width)
+                 :height (px height)
+                 :background-size (str (px spine-width) " " (px height))
+                 :left (px (- (/ width 2) (/ spine-width 2)))
+                 :transform (trans (y 90) (tz (/ width 2)))}}]
+       [:div.face.top
+        {:style {:background-image (img images (str "pages/" ear "/02.jpg"))
+                 :width (px width)
+                 :height (px spine-width)
+                 :background-size (str (px width) " " (px spine-width))
+                 :top (px (- (/ height 2) (/ spine-width 2)))
+                 :transform (trans (x 90) (tz (/ height 2)))}}]
+       [:div.face.bottom
+        {:style {:background-image (img images (str "pages/" ear "/03.jpg"))
+                 :width (px width)
+                 :height (px spine-width)
+                 :background-size (str (px width) " " (px spine-width))
+                 :top (px (- (/ height 2) (/ spine-width 2)))
+                 :transform (trans (x -90) (tz (/ height 2)))}}]]])))
 
 (defn wait-for-images [[images id html]]
   (let [loaded (fn [url]
