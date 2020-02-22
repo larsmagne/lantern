@@ -116,6 +116,11 @@
         state (atom :spinning)
         ears (js->clj js/earses)
         ear (nth ears (rand (count ears)))
+        image-property (if spines-only
+                         :background-url
+                         :background-image)
+        simg (fn [images file]
+               (img (if spines-only nil images) file))
         id (str "book" book)]
     (list
      images
@@ -125,13 +130,13 @@
        {:on-click (if spines-only nil
                       #(read-book book id state))
         :id id
-        :style {;;:animation-duration (str (+ (rand 10) 5) "s")
+        :style {:animation-duration (str (+ (rand 10) 5) "s")
                 :transform (trans (y 90)
                                   (x 5)
                                   (str "translateZ("
                                        (/ spine-width shrink) "px)")
-                                  (str " scale(" (/ 1 2) ")")
-                                  (str " scaleZ(" (/ 1 2) ")"))
+                                  (str " scale(0.5)")
+                                  (str " scaleZ(0.5)"))
                 ;;:animation-name (str "spinner-" book)
                 }}
        ;; The spinner animation keyframes.
@@ -150,18 +155,15 @@
                                                (+ (/ page 10) 0.1)))
                                         (x 0))}}
                     [:div.face.page
-                     {:id (str "page" page)
-                      :style
+                     {:style
                       {:width (px width)
                        :height (px height)
-                       :background-image (if spines-only
-                                           nil
-                                           (img images
-                                                (str book "/p0" pic ".jpg")))
+                       image-property (simg images (str book "/p0" pic ".jpg"))
                        :background-size (str (px (* width 2)) " " (px height))
                        :transform-origin "left top"
                        :background-position (str (px (- width)) " "
-                                                 (px height))}}]]
+                                                 (px height))}
+                      :id (str "book" book (str "page" page))}]]
                    ;; Even pages.
                    [:div.face
                     {:key (str "page" page)
@@ -172,89 +174,84 @@
                                                       (+ (/ page 10) 0.1)))
                                                (x 180))}}
                     [:div.face.page
-                     {:id (str "page" page)
-                      :style
+                     {:style
                       {:width (px width)
                        :height (px height)
-                       :background-image (if spines-only
-                                           nil
-                                           (img images
-                                                (str book "/p0" pic ".jpg")))
+                       image-property (simg images (str book "/p0" pic ".jpg"))
                        :background-size (str (px (* width 2)) " " (px height))
-                       :transform-origin "right bottom"}}]])))
+                       :transform-origin "right bottom"}
+                      :id (str "book" book (str "page" page))}]])))
              (reverse (range 0 7))))
        [:div.face
         {:style {:width (px width)
                  :height (px height)
                  :transform (trans (y 0) (tz (/ spine-width 2)))}}
         [:div.face.front
-         {:style {:background-image (if spines-only
-                                      nil
-                                      (img images (str book "/01.jpg")))
+         {:style {image-property (simg images (str book "/01.jpg"))
                   :width (px width)
                   :height (px height)
                   :background-size (str (px width) " " (px height))
-                  :transform-origin "left top"}}]]
+                  :transform-origin "left top"}
+          :id (str "book" book "front")}]]
        [:div.face.back
-        {:style {:background-image (if spines-only
-                                     nil
-                                     (img images (str book "/02.jpg")))
+        {:style {image-property (simg images (str book "/02.jpg"))
                  :width (px width)
                  :height (px height)
                  :background-size (str (px width) " " (px height))
-                 :transform (trans (y 180) (tz (/ spine-width 2)))}}]
+                 :transform (trans (y 180) (tz (/ spine-width 2)))}
+         :id (str "book" book "back")}]
        [:div.face.left
         {:style {:background-image (img images (str book "/03.jpg"))
                  :width (px spine-width)
                  :height (px height)
                  :background-size (str (px spine-width) " " (px height))
                  :left (px (- (/ width 2) (/ spine-width 2)))
-                 :transform (trans (y -90) (tz (/ width 2)))}}]
+                 :transform (trans (y -90) (tz (/ width 2)))}
+         :id (str "book" book "left")}]
        [:div.face.right
-        {:style {:background-image (if spines-only
-                                     nil
-                                     (img images (str "pages/" ear "/01.jpg")))
+        {:style {image-property (simg images (str "pages/" ear "/01.jpg"))
                  :width (px spine-width)
                  :height (px height)
                  :background-size (str (px spine-width) " " (px height))
                  :left (px (- (/ width 2) (/ spine-width 2)))
-                 :transform (trans (y 90) (tz (/ width 2)))}}]
+                 :transform (trans (y 90) (tz (/ width 2)))}
+         :id (str "book" book "right")}]
        [:div.face.top
-        {:style {:background-image (if spines-only
-                                     nil
-                                     (img images (str "pages/" ear "/02.jpg")))
+        {:style {image-property (simg images (str "pages/" ear "/02.jpg"))
                  :width (px width)
                  :height (px spine-width)
                  :background-size (str (px width) " " (px spine-width))
                  :top (px (- (/ height 2) (/ spine-width 2)))
-                 :transform (trans (x 90) (tz (/ height 2)))}}]
+                 :transform (trans (x 90) (tz (/ height 2)))}
+         :id (str "book" book "top")}]
        [:div.face.bottom
-        {:style {:background-image (if spines-only
-                                     nil
-                                     (img images (str "pages/" ear "/03.jpg")))
+        {:style {image-property (img images (str "pages/" ear "/03.jpg"))
                  :width (px width)
                  :height (px spine-width)
                  :background-size (str (px width) " " (px spine-width))
                  :top (px (- (/ height 2) (/ spine-width 2)))
-                 :transform (trans (x -90) (tz (/ height 2)))}}]]])))
+                 :transform (trans (x -90) (tz (/ height 2)))}
+         :id (str "book" book "bottom")}]]])))
 
 (defn wait-for-images [[images id html] & callback]
-  (let [loaded (fn [url]
+  (let [loaded (fn [node url]
                  (swap! images conj {url :loaded})
                  (when (every? (fn [[_ status]]
                                  (= status :loaded))
                                @images)
                    (if callback
+                     ;; Call the provided callback.
                      ((first callback))
+                     ;; The default callback.
                      (let [node (.getElementById js/document id)]
                        (.add (.-classList node) "fade-in")))))]
     [:div
      html
      [:div {:style {:display "none"}}
       (map (fn [[url state]]
-             [:img {:key url
-                    :on-load #(loaded url)
-                    :src url}])
+              [:img {:key url
+                     :on-load #(loaded %1 url)
+                     :src url}])
            @images)]]))
 
 (defn spinning []
@@ -263,33 +260,36 @@
      [:h2 "Lantern"]
      (wait-for-images (make-book (nth bs 43)))]))
 
+(defn set-background-image [images class book]
+  (let [style (.-style (.getElementById js/document
+                                        (str "book" book class)))
+        spec (.-backgroundUrl style)
+        [_ url] (re-find #"'(.*)'" spec)]
+    (swap! images conj {url :new})
+    ;; Copy over the URLs we computed to the real slots so that the
+    ;; browser will load them.
+    (set! (.-backgroundImage style) spec)))
+
+(def load-images (r/atom '()))
+
 (defn take-out-library-book [id book width]
   (prn id)
   (let [node (.getElementById js/document id)
-        style (.-style node)
-        display (fn []
-                  (let [[_ scale] (re-find #"matrix.([.0-9]+)"
-                                           (js/window.getRotation node))]
-                    (prn (js/window.getRotation node))
-                    (prn (.-offsetTop node))
-                    (prn (.-offsetLeft node))
-                    (add-class (str "book" book "cont") "take-out-full")
-                    (let [bstyle (.-style (.getElementById
-                                           js/document (str "book" book)))]
-                      (set! (.-transform bstyle)
-                            (trans (y 90)
-                                   (str " scale(" (/ scale 2) ")")
-                                   (str " scaleZ(" (/ scale 2) ")"))))
-                    (let [bstyle (.-style
-                                  (.getElementById
-                                   js/document (str "book" book)))]
-                      (set! (.-top bstyle) (px (.-offsetTop node)))
-                      (set! (.-left bstyle) (px (+ (.-offsetLeft node)
-                                                   (/ width 8 2)))))
-                    (remove-class id "take-out-slide")
-                    (prn "here")))]
-    (prn (.getElementById js/document (str "book" book)))
-    (add-class (str "book" book) "take-out-slide")))
+        done (atom false)
+        style (.-style node)]
+    (add-class (str "book" book) "take-out-slide")
+    (add-class (str "library-book-" book) "top-z")
+    (let [images (atom {})]
+      (doseq [class '("front" "back" "right" "top" "bottom")]
+        (set-background-image images class book))
+      (swap! load-images conj
+             (wait-for-images
+              [images nil [:div "images"]]
+              (fn []
+                (when (not @done)
+                  (reset! done true)
+                  (prn (str "loaded" book))
+                  (add-class (str "book" book) "take-out-loaded"))))))))
 
 (defn make-library [books]
   (let [shrink 8]
@@ -308,19 +308,13 @@
                 (map (fn [[url state]]
                        [:img {:key url
                               :on-load (fn []
-                                         (add-class book-id "fade-in"))
+                                         (add-class id "fade-in"))
                               :src url}])
                      @images)]]))
           (sort #(compare (read-string (first %1))
                           (read-string (first %2)))
                 books))
-     
-     [:div.take-outs
-      [:div.take-outs-inner
-       (map (fn [[book _ _]]
-              [:div.take-out {:id (str "take-out-" book)
-                              :key (str "take-out-" book)}])
-            books)]]]))
+     [:div#load-images @load-images]]))
 
 (defn library []
   (let [bs (js->clj js/books)]
