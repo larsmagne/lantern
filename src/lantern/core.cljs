@@ -9,11 +9,8 @@
 (defn px [number]
   (str number "px"))
 
-(defn img [image & offset]
-  (str "url('https://quimby.gnus.org/circus/lanterne/" image "')"
-       (if offset
-         " -200px -200px"
-         "")))
+(defn img [image]
+  (str "url('https://quimby.gnus.org/circus/lanterne/" image "')"))
 
 (defn tz [z]
   (str "translateZ(" z "px)"))
