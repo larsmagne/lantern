@@ -144,7 +144,8 @@
                       :style
                       {:width (px width)
                        :height (px height)
-                       :background-image (img images (str book "/p0" pic ".jpg"))
+                       :background-image (img images
+                                              (str book "/p0" pic ".jpg"))
                        :background-size (str (px (* width 2)) " " (px height))
                        :transform-origin "left top"
                        :background-position (str (px (- width)) " "
@@ -163,7 +164,8 @@
                       :style
                       {:width (px width)
                        :height (px height)
-                       :background-image (img images (str book "/p0" pic ".jpg"))
+                       :background-image (img images
+                                              (str book "/p0" pic ".jpg"))
                        :background-size (str (px (* width 2)) " " (px height))
                        :transform-origin "right bottom"}}]])))
              (reverse (range 0 7))))
@@ -218,12 +220,11 @@
                  (when (every? (fn [[_ status]]
                                  (= status :loaded))
                                @images)
-                   (prn "All done")
                    (let [node (.getElementById js/document id)]
                      (.add (.-classList node) "fade-in"))))]
     [:div
      html
-     [:div#images {:style {:display "none"}}
+     [:div {:style {:display "none"}}
       (map (fn [[url state]]
              [:img {:key url
                     :on-load #(loaded url)
@@ -236,11 +237,10 @@
      [:h2 "Lantern"]
      (wait-for-images (make-book (nth bs 43)))]))
 
-(def take-outs (r/atom '()))
-
 (defn take-out-library-book [id book width]
   (prn id)
-  (swap! take-outs conj (wait-for-images (make-book [book width 8]))))
+  (r/render (wait-for-images (make-book [book width 8]))
+            (.getElementById js/document (str "take-out-" book))))
 
 (defn make-library [books]
   (let [shrink 8]
@@ -265,7 +265,10 @@
     [:div
      [:h2 "Library"]
      (make-library bs)
-     [:div.take-out @take-outs]]))
+     [:div.take-outs
+      (map (fn [[book _ _]]
+             [:div.take-out {:id (str "take-out-" book)}])
+           bs)]]))
 
 ;; -------------------------
 ;; Initialize app

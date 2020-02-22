@@ -157,3 +157,19 @@ a:hover {
   display: inline-block;
   opacity: 0;
 }
+
+div.library {
+}
+
+div.take-outs {
+  position: absolute;
+  top: 100px;
+  left: 200px;
+  border: 10 px solid;
+}
+
+div.take-out {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
