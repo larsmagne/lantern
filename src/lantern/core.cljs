@@ -226,17 +226,22 @@
                     :src url}])
            @images)]]))
 
-(defn home-page []
+(defn make-spin []
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
-     (wait-for-images (make-book (nth bs 10)))]))
+     (wait-for-images (make-book (nth bs 43)))]))
+
+(defn make-library []
+  (let [bs (js->clj js/books)]
+    [:div
+     [:h2 "Library"]]))
 
 ;; -------------------------
 ;; Initialize app
 
 (defn mount-root []
-  (r/render [home-page] (.getElementById js/document "app")))
+  (r/render [make-library] (.getElementById js/document "app")))
 
 (defn init! []
   (mount-root))
