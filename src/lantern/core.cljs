@@ -7,6 +7,10 @@
   (.add (.-classList (.getElementById js/document id))
         class))
 
+(defn remove-class [id class]
+  (.remove (.-classList (.getElementById js/document id))
+           class))
+
 (defn px [number]
   (str number "px"))
 
@@ -121,9 +125,8 @@
        {:on-click #(read-book book id state)
         :id id
         :style {:animation-duration (str (+ (rand 10) 5) "s")
-                :animation-name (str "spinner-" book)
-                :width (px width)
-                :height (px height)}}
+                ;;:animation-name (str "spinner-" book)
+                }}
        ;; The spinner animation keyframes.
        [:style (make-keyframes book)]
        ;; The interior pages.
@@ -214,14 +217,16 @@
                  :top (px (- (/ height 2) (/ spine-width 2)))
                  :transform (trans (x -90) (tz (/ height 2)))}}]]])))
 
-(defn wait-for-images [[images id html]]
+(defn wait-for-images [[images id html] & callback]
   (let [loaded (fn [url]
                  (swap! images conj {url :loaded})
                  (when (every? (fn [[_ status]]
                                  (= status :loaded))
                                @images)
-                   (let [node (.getElementById js/document id)]
-                     (.add (.-classList node) "fade-in"))))]
+                   (if callback
+                     ((first callback))
+                     (let [node (.getElementById js/document id)]
+                       (.add (.-classList node) "fade-in")))))]
     [:div
      html
      [:div {:style {:display "none"}}
@@ -239,8 +244,32 @@
 
 (defn take-out-library-book [id book width]
   (prn id)
-  (r/render (wait-for-images (make-book [book width 8]))
-            (.getElementById js/document (str "take-out-" book))))
+  (let [node (.getElementById js/document id)
+        style (.-style node)
+        display (fn []
+                  (let [[_ scale] (re-find #"matrix.([.0-9]+)"
+                                           (js/window.getRotation node))]
+                    (prn (js/window.getRotation node))
+                    (prn (.-offsetTop node))
+                    (prn (.-offsetLeft node))
+                    (add-class (str "book" book "cont") "take-out-full")
+                    (let [bstyle (.-style (.getElementById
+                                           js/document (str "book" book)))]
+                      (set! (.-transform bstyle)
+                            (trans (y 90)
+                                   (str " scale(" (/ scale 2) ")")
+                                   (str " scaleZ(" (/ scale 2) ")"))))
+                    (let [bstyle (.-style
+                                  (.getElementById
+                                   js/document (str "book" book)))]
+                      (set! (.-top bstyle) (px (.-offsetTop node)))
+                      (set! (.-left bstyle) (px (+ (.-offsetLeft node)
+                                                   (/ width 8 2)))))
+                    (remove-class id "take-out-slide")
+                    (prn "here")))]
+    (add-class id "take-out-slide")
+    (r/render (wait-for-images (make-book [book width 8]) display)
+              (.getElementById js/document (str "take-out-" book)))))
 
 (defn make-library [books]
   (let [shrink 8]
@@ -258,18 +287,20 @@
                       :height (/ 2256 shrink)}]]))
           (sort #(compare (read-string (first %1))
                           (read-string (first %2)))
-                books))]))
+                books))
+     
+     [:div.take-outs
+      [:div.take-outs-inner
+       (map (fn [[book _ _]]
+              [:div.take-out {:id (str "take-out-" book)
+                              :key (str "take-out-" book)}])
+            books)]]]))
 
 (defn library []
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Library"]
-     (make-library bs)
-     [:div.take-outs
-      (map (fn [[book _ _]]
-             [:div.take-out {:id (str "take-out-" book)
-                             :key (str "take-out-" book)}])
-           bs)]]))
+     (make-library bs)]))
 
 ;; -------------------------
 ;; Initialize app

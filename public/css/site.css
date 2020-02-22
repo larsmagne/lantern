@@ -143,8 +143,6 @@ a:hover {
 .book-container {
   opacity: 0;
   position: absolute;
-  top: 100px;
-  left: 200px;
 }
 
 .fade-in {
@@ -158,18 +156,45 @@ a:hover {
   opacity: 0;
 }
 
+.top-z {
+  z-index: 1;
+}
+
 div.library {
+  position: relative;
 }
 
 div.take-outs {
   position: absolute;
-  top: 100px;
-  left: 200px;
+  top: 0px;
+  left: 0px;
   border: 10 px solid;
+}
+
+div.take-outs-inner {
+  position: relative;
 }
 
 div.take-out {
   position: absolute;
   top: 0px;
   left: 0px;
+}
+
+.take-out-slide {
+  transition: all 10s;
+  transform-style: preserve-3d;
+  transform: scale(2) !important;
+  z-index: 1;
+}
+
+.take-out-full {
+  opacity: 1;
+  position: absolute;
+}
+
+.take-out-full .book {
+  transition: all 0s;
+  transform-style: preserve-3d;
+  border: 5px solid green;
 }
