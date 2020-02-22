@@ -139,3 +139,10 @@ a:hover {
   transform-style: preserve-3d;
   transform: rotateY(0deg) !important;
 }
+
+
+.fade-in {
+  transition: all 10s;
+  transform-style: preserve-3d;
+  opacity: 1 !important;
+}
