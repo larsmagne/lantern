@@ -143,8 +143,7 @@
      (cont-id book)
      [:div.book-container {:id (cont-id book)}
       [:div.book
-       {:on-click oc
-        :id id
+       {:id id
         :style (if spines-only
                  {:animation-duration (str (+ (rand 10) 5) "s")
                   :transform (trans (y 90)
@@ -288,7 +287,6 @@
      (wait-for-images (make-book (nth bs 40)))]))
 
 (defn set-background-image [images class book]
-  (prn class)
   (let [style (find-style (page-id book class))
         spec (.-backgroundUrl style)
         [_ url] (re-find #"'(.*)'" spec)]
@@ -300,13 +298,12 @@
 (defonce book-z-index (atom 1))
 
 (defn take-out-library-book [id book width state]
-  (prn id state)
+  (prn "taking out" id state)
   (cond
     (= @state :spine)
     (let [done (atom false)
           start (.getTime (js/Date.))
           style (find-style id)]
-      (reset! state :spinning)
       (add-class (book-id book) "take-out-slide")
       (set! (.-zIndex style) @book-z-index)
       (swap! book-z-index inc)
@@ -323,9 +320,12 @@
                        (prn (str "loaded" book))
                        (let [loaded
                              (fn []
-                               (prn "did run")
-                               (remove-class (book-id book) "take-out-slide")
-                               (add-class (book-id book) "take-out-loaded"))
+                               (let [style (find-style (book-id book))]
+                                 (remove-class (book-id book) "take-out-slide")
+                                 (reset! state :front)
+                                 ;(set! (.-width style) (px (/ 1392 4)))
+                                 ;(set! (.-height style) (px (/ 2256 4)))
+                                 (add-class (book-id book) "see-front")))
                              lapsed (- (.getTime (js/Date.)) start)]
                          ;; Always give the first transition (pulling
                          ;; the book out) at least one second before
@@ -346,7 +346,7 @@
                   (make-book
                    [book width pages true
                     (fn [state]
-                      (fn []
+                      (fn [e]
                         (take-out-library-book id book width state)))])]
               [:div.library-book {:key book
                                   :id id
