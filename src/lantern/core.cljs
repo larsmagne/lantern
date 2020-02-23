@@ -101,19 +101,20 @@
         (.add (.-classList node) "closing")
         (js/setTimeout
          (fn []
+           (prn "Starting to spin")
            (when (= (.-animationName style) "")
              (set! (.-animationName style) (str "spinner-" book)))
            (.remove (.-classList node) "normal"))
          1000)
         (js/setTimeout #(.remove (.-classList node) "closing") 5000)))))
 
-(defn make-book [[book spine-width pages spines-only]]
+(defn make-book [[book spine-width pages spines-only on-click]]
   (let [images (atom {})
         shrink 4
         height (/ 2256 shrink)
         width (/ 1392 shrink)
         spine-width (/ spine-width shrink)
-        state (atom :spinning)
+        state (atom (if spines-only :spine :spinning))
         ears (js->clj js/earses)
         ear (nth ears (rand (count ears)))
         image-property (if spines-only
@@ -127,8 +128,9 @@
      (str id "cont")
      [:div.book-container {:id (str id "cont")}
       [:div.book
-       {:on-click (if spines-only nil
-                      #(read-book book id state))
+       {:on-click (if on-click
+                    (on-click state)
+                    #(read-book book id state))
         :id id
         :style {:animation-duration (str (+ (rand 10) 5) "s")
                 :transform (trans (y 90)
@@ -137,8 +139,9 @@
                                        (/ spine-width shrink) "px)")
                                   (str " scale(0.5)")
                                   (str " scaleZ(0.5)"))
-                ;;:animation-name (str "spinner-" book)
-                }}
+                :animation-name (if spines-only
+                                  ""
+                                  (str "spinner-" book))}}
        ;; The spinner animation keyframes.
        [:style (make-keyframes book)]
        ;; The interior pages.
@@ -245,7 +248,7 @@
                      ;; The default callback.
                      (let [node (.getElementById js/document id)]
                        (.add (.-classList node) "fade-in")))))]
-    [:div
+    [:div {:key (first (first @images))}
      html
      [:div {:style {:display "none"}}
       (map (fn [[url state]]
@@ -270,39 +273,49 @@
     ;; browser will load them.
     (set! (.-backgroundImage style) spec)))
 
-(def load-images (r/atom '()))
+(defonce book-z-index (atom 1))
 
-(defn take-out-library-book [id book width]
-  (prn id)
-  (let [node (.getElementById js/document id)
-        done (atom false)
-        style (.-style node)]
-    (add-class (str "book" book) "take-out-slide")
-    (add-class (str "library-book-" book) "top-z")
-    (let [images (atom {})]
-      (doseq [class '("front" "back" "right" "top" "bottom")]
-        (set-background-image images class book))
-      (swap! load-images conj
-             (wait-for-images
-              [images nil [:div "images"]]
-              (fn []
-                (when (not @done)
-                  (reset! done true)
-                  (prn (str "loaded" book))
-                  (add-class (str "book" book) "take-out-loaded"))))))))
+(defn take-out-library-book [id book width state]
+  (prn id state)
+  (cond
+    (= @state :spine)
+    (let [node (.getElementById js/document id)
+          done (atom false)
+          style (.-style node)]
+      (reset! state :spinning)
+      (add-class (str "book" book) "take-out-slide")
+      (set! (.-zIndex (.-style (.getElementById js/document
+                                                (str "library-book-" book))))
+            @book-z-index)
+      (swap! book-z-index inc)
+      (let [images (atom {})]
+        (doseq [class '("front" "back" "right" "top" "bottom")]
+          (set-background-image images class book))
+        (r/render (wait-for-images
+                   [images nil [:div]]
+                   (fn []
+                     (when (not @done)
+                       (reset! done true)
+                       (prn (str "loaded" book))
+                       (add-class (str "book" book) "take-out-loaded"))))
+                  (.getElementById js/document (str "preload-" book)))))
+    true (read-book book id state)))
 
 (defn make-library [books]
   (let [shrink 8]
     [:div.library
      (map (fn [[book width pages]]
             (let [id (str "library-book-" book)
-                  [images book-id html] (make-book [book width pages true])]
+                  [images book-id html]
+                  (make-book
+                   [book width pages true
+                    (fn [state]
+                      (fn []
+                        (take-out-library-book id book width state)))])]
               [:div.library-book {:key book
-                                  :on-click #(take-out-library-book
-                                              id book width)
                                   :id id
-                                  :style {:width (px (+ (/ width 8) 1))
-                                          :height (px (/ 2256 8))}}
+                                  :style {:width (px (+ (/ width shrink) 1))
+                                          :height (px (/ 2256 shrink))}}
                html
                [:div {:style {:display "none"}}
                 (map (fn [[url state]]
@@ -313,14 +326,17 @@
                      @images)]]))
           (sort #(compare (read-string (first %1))
                           (read-string (first %2)))
-                books))
-     [:div#load-images @load-images]]))
+                books))]))
 
 (defn library []
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Library"]
-     (make-library bs)]))
+     (make-library bs)
+     [:div#load-images (map (fn [[book _ _]]
+                              [:div {:id (str "preload-" book)
+                                     :key (str "preload-" book)}])
+                            bs)]]))
 
 ;; -------------------------
 ;; Initialize app
