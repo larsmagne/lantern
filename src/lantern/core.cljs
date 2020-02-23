@@ -62,7 +62,7 @@
 (defn read-book [book id state]
   (let [node (.getElementById js/document id)
         style (.-style node)]
-    (prn state)
+    (prn state id)
     (cond
       (= @state :spinning)
       (do
@@ -264,6 +264,7 @@
      (wait-for-images (make-book (nth bs 43)))]))
 
 (defn set-background-image [images class book]
+  (prn class)
   (let [style (.-style (.getElementById js/document
                                         (str "book" book class)))
         spec (.-backgroundUrl style)
@@ -284,12 +285,13 @@
           style (.-style node)]
       (reset! state :spinning)
       (add-class (str "book" book) "take-out-slide")
-      (set! (.-zIndex (.-style (.getElementById js/document
-                                                (str "library-book-" book))))
+      (set! (.-zIndex (.-style (.getElementById js/document id)))
             @book-z-index)
       (swap! book-z-index inc)
       (let [images (atom {})]
-        (doseq [class '("front" "back" "right" "top" "bottom")]
+        (doseq [class '("front" "back" "right" "top" "bottom"
+                        "page0" "page1" "page2" "page3" "page4" "page5"
+                        "page6")]
           (set-background-image images class book))
         (r/render (wait-for-images
                    [images nil [:div]]
@@ -297,9 +299,21 @@
                      (when (not @done)
                        (reset! done true)
                        (prn (str "loaded" book))
-                       (add-class (str "book" book) "take-out-loaded"))))
+                       (remove-class (str "book" book) "take-out-slide")
+                       (add-class (str "book" book) "take-out-loaded")
+                       (js/setTimeout
+                        (fn []
+                          (let [style (.-style (.getElementById js/document (str "book" book)))]
+                            (remove-class (str "book" book) "take-out-loaded")
+                            (set! (.-width style) (px (/ 1392 4)))
+                            (set! (.-height style) (px (/ 2256 4)))
+                            (set! (.-transform style) "")
+                            (set! (.-animationName style) (str "spinner-" book))
+                            (set! (.-animationPlayState style) "running")))
+                        1000))))
                   (.getElementById js/document (str "preload-" book)))))
-    true (read-book book id state)))
+    true (do
+           (read-book book (str "book" book) state))))
 
 (defn make-library [books]
   (let [shrink 8]
