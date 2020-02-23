@@ -289,8 +289,7 @@
 
 (defn set-background-image [images class book]
   (prn class)
-  (let [style (.-style (.getElementById js/document
-                                        (page-id book class)))
+  (let [style (find-style (page-id book class))
         spec (.-backgroundUrl style)
         [_ url] (re-find #"'(.*)'" spec)]
     (swap! images conj {url :new})
@@ -304,13 +303,11 @@
   (prn id state)
   (cond
     (= @state :spine)
-    (let [node (.getElementById js/document id)
-          done (atom false)
-          style (.-style node)]
+    (let [done (atom false)
+          style (find-style id)]
       (reset! state :spinning)
       (add-class (book-id book) "take-out-slide")
-      (set! (.-zIndex (.-style (.getElementById js/document id)))
-            @book-z-index)
+      (set! (.-zIndex style) @book-z-index)
       (swap! book-z-index inc)
       (let [images (atom {})]
         (doseq [class '("front" "back" "right" "top" "bottom"
