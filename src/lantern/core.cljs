@@ -3,6 +3,18 @@
      [reagent.core :as r]
      [cljs.reader :refer [read-string]]))
 
+(defn book-id [book]
+  (str "book" book))
+
+(defn cont-id [book]
+  (str "book" book "cont"))
+
+(defn page-id [book page]
+  (str "book" book page))
+
+(defn find-style [id]
+  (.-style (.getElementById js/document id)))
+
 (defn add-class [id class]
   (.add (.-classList (.getElementById js/document id))
         class))
@@ -122,14 +134,14 @@
                          :background-image)
         simg (fn [images file]
                (img (if spines-only nil images) file))
-        id (str "book" book)
+        id (book-id book)
         oc (if on-click
              (on-click state)
              #(read-book book id state))]
     (list
      images
-     (str id "cont")
-     [:div.book-container {:id (str id "cont")}
+     (cont-id book)
+     [:div.book-container {:id (cont-id book)}
       [:div.book
        {:on-click oc
         :id id
@@ -170,7 +182,7 @@
                        :background-position (str (px (- width)) " "
                                                  (px height))}
                       :class (str "face page page" page)
-                      :id (str "book" book (str "page" page))}]]
+                      :id (page-id book (str "page" page))}]]
                    ;; Even pages.
                    [:div.face
                     {:key (str "page" page)
@@ -189,7 +201,7 @@
                        :background-size (str (px (* width 2)) " " (px height))
                        :transform-origin "right bottom"}
                       :class (str "face page page" page)
-                      :id (str "book" book (str "page" page))}]])))
+                      :id (page-id book (str "page" page))}]])))
              (reverse (range 0 7))))
        [:div.face
         {:style {:width (px width)
@@ -201,7 +213,7 @@
                   :height (px height)
                   :background-size (str (px width) " " (px height))
                   :transform-origin "left top"}
-          :id (str "book" book "front")
+          :id (page-id book "front")
           :on-click oc}]]
        [:div.face.back
         {:style {image-property (simg images (str book "/02.jpg"))
@@ -209,7 +221,7 @@
                  :height (px height)
                  :background-size (str (px width) " " (px height))
                  :transform (trans (y 180) (tz (/ spine-width 2)))}
-         :id (str "book" book "back")
+         :id (page-id book "back")
          :on-click oc}]
        [:div.face.left
         {:style {:background-image (img images (str book "/03.jpg"))
@@ -218,7 +230,7 @@
                  :background-size (str (px spine-width) " " (px height))
                  :left (px (- (/ width 2) (/ spine-width 2)))
                  :transform (trans (y -90) (tz (/ width 2)))}
-         :id (str "book" book "left")
+         :id (page-id book "left")
          :on-click oc}]
        [:div.face.right
         {:style {image-property (simg images (str "pages/" ear "/01.jpg"))
@@ -227,7 +239,7 @@
                  :background-size (str (px spine-width) " " (px height))
                  :left (px (- (/ width 2) (/ spine-width 2)))
                  :transform (trans (y 90) (tz (/ width 2)))}
-         :id (str "book" book "right")
+         :id (page-id book "right")
          :on-click oc}]
        [:div.face.top
         {:style {image-property (simg images (str "pages/" ear "/02.jpg"))
@@ -236,7 +248,7 @@
                  :background-size (str (px width) " " (px spine-width))
                  :top (px (- (/ height 2) (/ spine-width 2)))
                  :transform (trans (x 90) (tz (/ height 2)))}
-         :id (str "book" book "top")
+         :id (page-id book "top")
          :on-click oc}]
        [:div.face.bottom
         {:style {image-property (img images (str "pages/" ear "/03.jpg"))
@@ -245,7 +257,7 @@
                  :background-size (str (px width) " " (px spine-width))
                  :top (px (- (/ height 2) (/ spine-width 2)))
                  :transform (trans (x -90) (tz (/ height 2)))}
-         :id (str "book" book "bottom")
+         :id (page-id book "bottom")
          :on-click oc}]]])))
 
 (defn wait-for-images [[images id html] & callback]
@@ -278,7 +290,7 @@
 (defn set-background-image [images class book]
   (prn class)
   (let [style (.-style (.getElementById js/document
-                                        (str "book" book class)))
+                                        (page-id book class)))
         spec (.-backgroundUrl style)
         [_ url] (re-find #"'(.*)'" spec)]
     (swap! images conj {url :new})
@@ -296,7 +308,7 @@
           done (atom false)
           style (.-style node)]
       (reset! state :spinning)
-      (add-class (str "book" book) "take-out-slide")
+      (add-class (book-id book) "take-out-slide")
       (set! (.-zIndex (.-style (.getElementById js/document id)))
             @book-z-index)
       (swap! book-z-index inc)
@@ -311,12 +323,12 @@
                      (when (not @done)
                        (reset! done true)
                        (prn (str "loaded" book))
-                       (remove-class (str "book" book) "take-out-slide")
-                       (add-class (str "book" book) "take-out-loaded")
+                       (remove-class (book-id book) "take-out-slide")
+                       (add-class (book-id book) "take-out-loaded")
                        (js/setTimeout
                         (fn []
-                          (let [style (.-style (.getElementById js/document (str "book" book)))]
-                            (remove-class (str "book" book) "take-out-loaded")
+                          (let [style (find-style (book-id book))]
+                            (remove-class (book-id book) "take-out-loaded")
                             (set! (.-width style) (px (/ 1392 4)))
                             (set! (.-height style) (px (/ 2256 4)))
                             (set! (.-transform style) "")
@@ -325,7 +337,7 @@
                         1000))))
                   (.getElementById js/document (str "preload-" book)))))
     true (do
-           (read-book book (str "book" book) state))))
+           (read-book book (book-id book) state))))
 
 (defn make-library [books]
   (let [shrink 8]
