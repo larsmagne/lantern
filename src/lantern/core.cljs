@@ -138,15 +138,16 @@
         simg (fn [images file]
                (img (if spines-only nil images) file))
         id (book-id book)
-        oc (if on-click
-             (on-click state)
-             #(read-book book id state))]
+        oc nil]
     (list
      images
      (cont-id book)
      [:div.book-container {:id (cont-id book)}
       [:div.book
        {:id id
+        :on-click (if on-click
+                    (on-click state)
+                    #(read-book book id state))
         :style (if spines-only
                  {:animation-duration (str (+ (rand 10) 5) "s")
                   :transform (trans (y 90)
