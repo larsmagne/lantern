@@ -45,7 +45,6 @@ a:hover {
   transform-style: preserve-3d;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  border: 10px solid green;
 }
 
 .face {
