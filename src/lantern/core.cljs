@@ -122,15 +122,16 @@
                          :background-image)
         simg (fn [images file]
                (img (if spines-only nil images) file))
-        id (str "book" book)]
+        id (str "book" book)
+        oc (if on-click
+             (on-click state)
+             #(read-book book id state))]
     (list
      images
      (str id "cont")
      [:div.book-container {:id (str id "cont")}
       [:div.book
-       {:on-click (if on-click
-                    (on-click state)
-                    #(read-book book id state))
+       {:on-click oc
         :id id
         :style (if spines-only
                  {:animation-duration (str (+ (rand 10) 5) "s")
@@ -200,14 +201,16 @@
                   :height (px height)
                   :background-size (str (px width) " " (px height))
                   :transform-origin "left top"}
-          :id (str "book" book "front")}]]
+          :id (str "book" book "front")
+          :on-click oc}]]
        [:div.face.back
         {:style {image-property (simg images (str book "/02.jpg"))
                  :width (px width)
                  :height (px height)
                  :background-size (str (px width) " " (px height))
                  :transform (trans (y 180) (tz (/ spine-width 2)))}
-         :id (str "book" book "back")}]
+         :id (str "book" book "back")
+         :on-click oc}]
        [:div.face.left
         {:style {:background-image (img images (str book "/03.jpg"))
                  :width (px spine-width)
@@ -215,7 +218,8 @@
                  :background-size (str (px spine-width) " " (px height))
                  :left (px (- (/ width 2) (/ spine-width 2)))
                  :transform (trans (y -90) (tz (/ width 2)))}
-         :id (str "book" book "left")}]
+         :id (str "book" book "left")
+         :on-click oc}]
        [:div.face.right
         {:style {image-property (simg images (str "pages/" ear "/01.jpg"))
                  :width (px spine-width)
@@ -223,7 +227,8 @@
                  :background-size (str (px spine-width) " " (px height))
                  :left (px (- (/ width 2) (/ spine-width 2)))
                  :transform (trans (y 90) (tz (/ width 2)))}
-         :id (str "book" book "right")}]
+         :id (str "book" book "right")
+         :on-click oc}]
        [:div.face.top
         {:style {image-property (simg images (str "pages/" ear "/02.jpg"))
                  :width (px width)
@@ -231,7 +236,8 @@
                  :background-size (str (px width) " " (px spine-width))
                  :top (px (- (/ height 2) (/ spine-width 2)))
                  :transform (trans (x 90) (tz (/ height 2)))}
-         :id (str "book" book "top")}]
+         :id (str "book" book "top")
+         :on-click oc}]
        [:div.face.bottom
         {:style {image-property (img images (str "pages/" ear "/03.jpg"))
                  :width (px width)
@@ -239,7 +245,8 @@
                  :background-size (str (px width) " " (px spine-width))
                  :top (px (- (/ height 2) (/ spine-width 2)))
                  :transform (trans (x -90) (tz (/ height 2)))}
-         :id (str "book" book "bottom")}]]])))
+         :id (str "book" book "bottom")
+         :on-click oc}]]])))
 
 (defn wait-for-images [[images id html] & callback]
   (let [loaded (fn [node url]
@@ -361,7 +368,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (r/render [spinning] (.getElementById js/document "app")))
+  (r/render [library] (.getElementById js/document "app")))
 
 (defn init! []
   (mount-root))

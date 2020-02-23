@@ -156,6 +156,11 @@ a:hover {
   display: inline-block;
   position: relative;
   opacity: 0;
+  pointer-events: none;
+}
+
+.library-book div {
+  pointer-events: auto;
 }
 
 .top-z {
