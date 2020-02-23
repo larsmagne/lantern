@@ -180,6 +180,7 @@
                        :transform-origin "left top"
                        :background-position (str (px (- width)) " "
                                                  (px height))}
+                      :on-click oc
                       :class (str "face page page" page)
                       :id (page-id book (str "page" page))}]]
                    ;; Even pages.
@@ -199,6 +200,7 @@
                        image-property (simg images (str book "/p0" pic ".jpg"))
                        :background-size (str (px (* width 2)) " " (px height))
                        :transform-origin "right bottom"}
+                      :on-click oc
                       :class (str "face page page" page)
                       :id (page-id book (str "page" page))}]])))
              (reverse (range 0 7))))
@@ -321,11 +323,14 @@
               (prn (str "loaded" book))
               (let [loaded
                     (fn []
-                      (let [style (find-style (book-id book))]
+                      (let [style (find-style (book-id book))
+                            cont-style (find-style (cont-id book))]
                         (remove-class (book-id book) "take-out-slide")
                         (reset! state :front)
-                                        ;(set! (.-width style) (px (/ 1392 4)))
-                                        ;(set! (.-height style) (px (/ 2256 4)))
+                        (set! (.-width style) (px (/ 1392 4)))
+                        (set! (.-left cont-style) (px (- (/ 1392 8))))
+                        (set! (.-height style) (px (/ 2256 4)))
+                        (set! (.-top cont-style) (px -105))
                         (add-class (book-id book) "see-front")))
                     lapsed (- (.getTime (js/Date.)) start)]
                 ;; Always give the first transition (pulling
