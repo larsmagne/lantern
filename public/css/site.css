@@ -173,6 +173,7 @@ div.library {
 .take-out-slide {
   transition: all 5s;
   transform-style: preserve-3d;
+  transition-timing-function: linear;
   transform: rotateY(90deg) rotateX(15deg) scale(1) scaleZ(1) !important;
 }
 

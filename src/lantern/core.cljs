@@ -304,6 +304,7 @@
   (cond
     (= @state :spine)
     (let [done (atom false)
+          start (.getTime (js/Date.))
           style (find-style id)]
       (reset! state :spinning)
       (add-class (book-id book) "take-out-slide")
@@ -320,18 +321,18 @@
                      (when (not @done)
                        (reset! done true)
                        (prn (str "loaded" book))
-                       (remove-class (book-id book) "take-out-slide")
-                       (add-class (book-id book) "take-out-loaded")
-                       (js/setTimeout
-                        (fn []
-                          (let [style (find-style (book-id book))]
-                            (remove-class (book-id book) "take-out-loaded")
-                            (set! (.-width style) (px (/ 1392 4)))
-                            (set! (.-height style) (px (/ 2256 4)))
-                            (set! (.-transform style) "")
-                            (set! (.-animationName style) (str "spinner-" book))
-                            (set! (.-animationPlayState style) "running")))
-                        1000))))
+                       (let [loaded
+                             (fn []
+                               (prn "did run")
+                               (remove-class (book-id book) "take-out-slide")
+                               (add-class (book-id book) "take-out-loaded"))
+                             lapsed (- (.getTime (js/Date.)) start)]
+                         ;; Always give the first transition (pulling
+                         ;; the book out) at least one second before
+                         ;; turning.
+                         (if (< lapsed 1000)
+                           (js/setTimeout loaded (- 1000 lapsed))
+                           (loaded))))))
                   (.getElementById js/document (str "preload-" book)))))
     true (do
            (read-book book (book-id book) state))))
