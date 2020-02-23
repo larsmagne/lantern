@@ -7,3 +7,8 @@ function getRotation(element) {
       || style['transform'] ;
   return transformString;
 }
+
+function getPosition(e) {
+  return [e.getBoundingClientRect().left + document.documentElement.scrollLeft,
+	  e.getBoundingClientRect().top + document.documentElement.scrollTop];
+}

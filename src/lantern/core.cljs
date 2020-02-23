@@ -12,6 +12,9 @@
 (defn page-id [book page]
   (str "book" book page))
 
+(defn find-node [id]
+  (.getElementById js/document id))
+
 (defn find-style [id]
   (.-style (.getElementById js/document id)))
 
@@ -297,6 +300,14 @@
     ;; browser will load them.
     (set! (.-backgroundImage style) spec)))
 
+(defn make-center [book]
+  (let [pos (js->clj (js/getPosition (find-node (str "library-book-" book))))]
+    (prn pos)
+    (set! (.-innerHTML (find-node (str (str "library-book-style-" book))))
+          (str ".center-" book " { transition: all 2s; transform-style: preserve-3d; transition-timing-function: linear; margin-left: "
+               (- (/ (.-innerWidth js/window) 2) (first pos))
+               "px; }"))))
+
 (defonce book-z-index (atom 1))
 
 (defn take-out-library-book [id book width state]
@@ -329,9 +340,12 @@
                         (reset! state :front)
                         (set! (.-width style) (px (/ 1392 4)))
                         (set! (.-left cont-style) (px (- (/ 1392 8))))
-                        (set! (.-height style) (px (/ 2256 4)))
-                        (set! (.-top cont-style) (px -105))
-                        (add-class (book-id book) "see-front")))
+                        ;;(set! (.-height style) (px (/ 2256 4)))
+                        ;;(set! (.-top cont-style) (px -105))
+                        (add-class (book-id book) "see-front")
+                        (make-center book)
+                        (add-class (cont-id book)
+                                   (str "center-" book))))
                     lapsed (- (.getTime (js/Date.)) start)]
                 ;; Always give the first transition (pulling
                 ;; the book out) at least one second before
@@ -359,6 +373,7 @@
                                   :style {:width (px (+ (/ width shrink) 1))
                                           :height (px (/ 2256 shrink))}}
                html
+               [:style {:id (str "library-book-style-" book)}]
                [:div {:style {:display "none"}}
                 (map (fn [[url state]]
                        [:img {:key url
