@@ -183,8 +183,9 @@
                        :transform-origin "left top"
                        :background-position (str (px (- width)) " "
                                                  (px height))}
-                      :on-click oc
                       :class (str "face page page" page)
+                      ;; The click here doesn't work?
+                      :on-click oc
                       :id (page-id book (str "page" page))}]]
                    ;; Even pages.
                    [:div.face
@@ -203,8 +204,8 @@
                        image-property (simg images (str book "/p0" pic ".jpg"))
                        :background-size (str (px (* width 2)) " " (px height))
                        :transform-origin "right bottom"}
-                      :on-click oc
                       :class (str "face page page" page)
+                      :on-click oc
                       :id (page-id book (str "page" page))}]])))
              (reverse (range 0 7))))
        [:div.face
@@ -362,6 +363,22 @@
                   (js/setTimeout loaded (- 1000 lapsed))
                   (loaded))))))
          (.getElementById js/document (str "preload-" book)))))
+    (= @state :spinning)
+    (do
+      ;; Set the current animation 3d transform so we have something to
+      ;; transition from.
+      (let [node (find-node (book-id book))
+            style (.-style node)]
+        (set! (.-transform style) (js/window.getRotation node))
+        (set! (.-animationName style) "")
+        (reset! state :spine)
+        (prn "Putting back in")
+        ;; Chrome needs to do a reflow before adding the transition class.
+        (js/setTimeout (fn []
+                         (add-class (book-id book) "put-back-book")
+                         (add-class (cont-id book) "put-back-cont"))
+                       10)
+        ))
     true (do
            (read-book book (book-id book) state))))
 
