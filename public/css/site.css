@@ -183,14 +183,6 @@ div.library {
   transform: rotateY(30deg) rotateX(0deg) scale(1) scaleZ(1) !important;
 }
 
-.put-back-book {
-  transition: all 5s;
-  transform-style: preserve-3d;
-  transform: rotateY(90deg) rotateX(5deg) scale(0.5) scaleZ(0.5) !important;
-  width: 0px !important;
-  height: 0px !important;
-}
-
 .put-back-cont {
   transition: all 5s;
   transform-style: preserve-3d;

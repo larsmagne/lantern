@@ -301,7 +301,7 @@
     ;; browser will load them.
     (set! (.-backgroundImage style) spec)))
 
-(defn make-center [book]
+(defn make-center [book spine-width]
   (let [pos (js->clj (js/getPosition (find-node (str "library-book-" book))))]
     (prn pos)
     (set! (.-innerHTML (find-node (str (str "library-book-style-" book))))
@@ -311,7 +311,11 @@
                (- (/ (.-innerHeight js/window) 2)
                   (nth pos 1)
                   (/ 2256 8))
-               "px; }"))))
+               "px; }"
+               ".put-back-book-" book " { transition: all 5s; transform-style: preserve-3d; transform: rotateY(90deg) rotateX(5deg) scale(0.5) scaleZ(0.5) translateZ("
+               (/ spine-width 8)
+               "px) !important; width: 0px !important; height: 0px !important; }"
+               ))))
 
 (defonce book-z-index (atom 1))
 
@@ -346,7 +350,7 @@
                         (set! (.-width style) (px (/ 1392 4)))
                         (set! (.-left cont-style) (px (- (/ 1392 8))))
                         (add-class (book-id book) "see-front")
-                        (make-center book)
+                        (make-center book width)
                         (add-class (cont-id book)
                                    (str "center-" book))
                         (js/setTimeout
@@ -371,11 +375,11 @@
             style (.-style node)]
         (set! (.-transform style) (js/window.getRotation node))
         (set! (.-animationName style) "")
-        (reset! state :spine)
+        (reset! state :front)
         (prn "Putting back in")
         ;; Chrome needs to do a reflow before adding the transition class.
         (js/setTimeout (fn []
-                         (add-class (book-id book) "put-back-book")
+                         (add-class (book-id book) (str "put-back-book-" book))
                          (add-class (cont-id book) "put-back-cont"))
                        10)
         ))
