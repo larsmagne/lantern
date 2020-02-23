@@ -70,7 +70,7 @@ a:hover {
 .see-front {
   transition: all 2s;
   transform-style: preserve-3d;
-  transform: rotateY(0deg) rotateX(0deg) rotateZ(5deg) scale(1.5) !important;
+  transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1.5) !important;
 }
 
 .see-front div.front, .see-front #page0, .see-front #page1, .see-front #page2,
@@ -174,7 +174,7 @@ div.library {
   transition: all 5s;
   transform-style: preserve-3d;
   transition-timing-function: linear;
-  transform: rotateY(90deg) rotateX(15deg) scale(1) scaleZ(1) !important;
+  transform: rotateY(90deg) rotateX(5deg) scale(1) scaleZ(1) !important;
 }
 
 .take-out-loaded {

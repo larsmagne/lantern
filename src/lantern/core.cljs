@@ -306,6 +306,10 @@
     (set! (.-innerHTML (find-node (str (str "library-book-style-" book))))
           (str ".center-" book " { transition: all 2s; transform-style: preserve-3d; transition-timing-function: linear; margin-left: "
                (- (/ (.-innerWidth js/window) 2) (first pos))
+               "px; margin-top: "
+               (- (/ (.-innerHeight js/window) 2)
+                  (nth pos 1)
+                  (/ 2256 8))
                "px; }"))))
 
 (defonce book-z-index (atom 1))
@@ -340,12 +344,16 @@
                         (reset! state :front)
                         (set! (.-width style) (px (/ 1392 4)))
                         (set! (.-left cont-style) (px (- (/ 1392 8))))
-                        ;;(set! (.-height style) (px (/ 2256 4)))
-                        ;;(set! (.-top cont-style) (px -105))
                         (add-class (book-id book) "see-front")
                         (make-center book)
                         (add-class (cont-id book)
-                                   (str "center-" book))))
+                                   (str "center-" book))
+                        (js/setTimeout
+                         (fn []
+                           (set! (.-height style) (px (/ 2256 4)))
+                           (set! (.-top cont-style) (px (/ 2256 16)))
+                           )
+                         2000)))
                     lapsed (- (.getTime (js/Date.)) start)]
                 ;; Always give the first transition (pulling
                 ;; the book out) at least one second before
