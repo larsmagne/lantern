@@ -322,6 +322,12 @@
 (defn take-out-library-book [id book width state]
   (prn "taking out" id state)
   (cond
+    (= @state :put-back)
+    (do
+      (reset! state :front)
+      (remove-class (book-id book) (str "put-back-book-" book))
+      (remove-class (cont-id book) "put-back-cont")
+      (add-class (book-id book) "see-front"))
     (= @state :spine)
     (let [done (atom false)
           start (.getTime (js/Date.))
@@ -356,8 +362,7 @@
                         (js/setTimeout
                          (fn []
                            (set! (.-height style) (px (/ 2256 4)))
-                           (set! (.-top cont-style) (px (/ 2256 16)))
-                           )
+                           (set! (.-top cont-style) (px (/ 2256 16))))
                          2000)))
                     lapsed (- (.getTime (js/Date.)) start)]
                 ;; Always give the first transition (pulling
@@ -375,7 +380,7 @@
             style (.-style node)]
         (set! (.-transform style) (js/window.getRotation node))
         (set! (.-animationName style) "")
-        (reset! state :front)
+        (reset! state :put-back)
         (prn "Putting back in")
         ;; Chrome needs to do a reflow before adding the transition class.
         (js/setTimeout (fn []
