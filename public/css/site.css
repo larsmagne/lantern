@@ -42,10 +42,10 @@ a:hover {
 }
 
 .book {
-  position: relative;
   transform-style: preserve-3d;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+  border: 10px solid green;
 }
 
 .face {
@@ -95,32 +95,32 @@ a:hover {
   transform: rotateY(0deg) rotateX(0deg) rotateZ(-5deg) scale(1.5) translateX(300px) !important;
 }
 
-.open-1 div.front, .open-1 #page0 {
+.open-1 div.front, .open-1 .page0 {
   transition: all 2s;
   transform-style: preserve-3d;
   transform: rotateY(-170deg) !important;
 }
 
-.open-2 div.front, .open-2 #page0, .open-2 #page1, .open-2 #page2 {
+.open-2 div.front, .open-2 .page0, .open-2 .page1, .open-2 .page2 {
   transition: all 2s;
   transform-style: preserve-3d;
   transform: rotateY(-170deg) !important;
 }
 
-.open-2 #page2 {
+.open-2 .page2 {
   transition: all 2s;
   transform-style: preserve-3d;
   transform: rotateY(-165deg) !important;
 }
 
-.open-3 div.front, .open-3 #page0, .open-3 #page1, .open-3 #page2,
-.open-3 #page3, .open-3 #page4 {
+.open-3 div.front, .open-3 .page0, .open-3 .page1, .open-3 .page2,
+.open-3 .page3, .open-3 .page4 {
   transition: all 2s;
   transform-style: preserve-3d;
   transform: rotateY(-170deg) !important;
 }
 
-.open-3 #page4 {
+.open-3 .page4 {
   transition: all 2s;
   transform-style: preserve-3d;
   transform: rotateY(-160deg) !important;
@@ -133,8 +133,8 @@ a:hover {
   transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1) !important;
 }
 
-.closing div.front, .closing #page0, .closing #page1, .closing #page2,
-.closing #page3, .closing #page4, .closing #page5, .closing #page6 {
+.closing div.front, .closing .page0, .closing .page1, .closing .page2,
+.closing .page3, .closing .page4, .closing .page5, .closing .page6 {
   transition: all 5s;
   transform-style: preserve-3d;
   transform: rotateY(0deg) !important;
@@ -166,23 +166,6 @@ div.library {
   position: relative;
 }
 
-div.take-outs {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  border: 10 px solid;
-}
-
-div.take-outs-inner {
-  position: relative;
-}
-
-div.take-out {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-}
-
 .take-out-slide {
   transition: all 5s;
   transform-style: preserve-3d;
@@ -193,18 +176,4 @@ div.take-out {
   transition: all 5s;
   transform-style: preserve-3d;
   transform: rotateY(30deg) rotateX(0deg) scale(1) scaleZ(1) !important;
-}
-
-.take-out-slide div {
-}
-
-.take-out-full {
-  opacity: 1;
-  position: absolute;
-}
-
-.take-out-full .book {
-  transition: all 0s;
-  transform-style: preserve-3d;
-  border: 5px solid green;
 }

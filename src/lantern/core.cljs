@@ -132,16 +132,18 @@
                     (on-click state)
                     #(read-book book id state))
         :id id
-        :style {:animation-duration (str (+ (rand 10) 5) "s")
-                :transform (trans (y 90)
-                                  (x 5)
-                                  (str "translateZ("
-                                       (/ spine-width shrink) "px)")
-                                  (str " scale(0.5)")
-                                  (str " scaleZ(0.5)"))
-                :animation-name (if spines-only
-                                  ""
-                                  (str "spinner-" book))}}
+        :style (if spines-only
+                 {:animation-duration (str (+ (rand 10) 5) "s")
+                  :transform (trans (y 90)
+                                    (x 5)
+                                    (str "translateZ("
+                                         (/ spine-width shrink) "px)")
+                                    (str " scale(0.5)")
+                                    (str " scaleZ(0.5)"))}
+                 {:animation-duration (str (+ (rand 10) 5) "s")
+                  :width (px width)
+                  :height (px height)
+                  :animation-name (str "spinner-" book)})}
        ;; The spinner animation keyframes.
        [:style (make-keyframes book)]
        ;; The interior pages.
@@ -157,7 +159,7 @@
                       :transform (trans (tz (- (/ spine-width 2)
                                                (+ (/ page 10) 0.1)))
                                         (x 0))}}
-                    [:div.face.page
+                    [:div
                      {:style
                       {:width (px width)
                        :height (px height)
@@ -166,6 +168,7 @@
                        :transform-origin "left top"
                        :background-position (str (px (- width)) " "
                                                  (px height))}
+                      :class (str "face page page" page)
                       :id (str "book" book (str "page" page))}]]
                    ;; Even pages.
                    [:div.face
@@ -176,13 +179,15 @@
                                                (tz (- (/ spine-width 2)
                                                       (+ (/ page 10) 0.1)))
                                                (x 180))}}
-                    [:div.face.page
+                    [:div
                      {:style
                       {:width (px width)
                        :height (px height)
+                       :background-color "red"
                        image-property (simg images (str book "/p0" pic ".jpg"))
                        :background-size (str (px (* width 2)) " " (px height))
                        :transform-origin "right bottom"}
+                      :class (str "face page page" page)
                       :id (str "book" book (str "page" page))}]])))
              (reverse (range 0 7))))
        [:div.face
@@ -261,7 +266,7 @@
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
-     (wait-for-images (make-book (nth bs 43)))]))
+     (wait-for-images (make-book (nth bs 40)))]))
 
 (defn set-background-image [images class book]
   (prn class)
@@ -356,7 +361,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (r/render [library] (.getElementById js/document "app")))
+  (r/render [spinning] (.getElementById js/document "app")))
 
 (defn init! []
   (mount-root))
