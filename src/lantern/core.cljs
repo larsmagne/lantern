@@ -120,7 +120,8 @@
   (add-class id "closing")
   (js/setTimeout
    (fn []
-     (add-class (cont-id book) "spinning")
+     (when (= (.-animationName (find-style id)) "")
+       (set! (.-animationName (find-style id)) (str "spinner-" book)))
      (remove-class id "normal"))
    1000)
   (js/setTimeout (fn []
@@ -151,137 +152,129 @@
      images
      (cont-id book)
      [:div.book-container {:id (cont-id book)}
-      [:div.book-outer-1
-       {:style {:animation-duration (str (+ (rand 10) 5) "s")}
-        :id (str "outer-" book)}
-       [:div.book-outer-2
-        {:style {:animation-duration (str (+ (rand 10) 5) "s")}}
-        [:div.book-outer-3
-         {:style {:animation-duration (str (+ (rand 10) 5) "s")}}
-         [:div.book
-          {:id id
-           :on-click (if on-click
-                       (on-click state)
-                       #(read-book book id state))
-           :style (if spines-only
-                    {:animation-duration (str (+ (rand 10) 5) "s")
-                     :transform (trans (tz 0)
-                                       (str "translateX("
-                                            (/ spine-width shrink) "px)")
-                                       (y 90)
-                                       (x 5)
-                                       (str " scale(0.5)")
-                                       (str " scaleZ(0.5)"))}
-                    {:animation-duration (str (+ (rand 10) 5) "s")
-                     :transform-style "preserve-3d"
-                     :width (px width)
-                     :height (px height)
-                     ;;:animation-name (str "spinner-" book)
-                     })}
-          ;; The spinner animation keyframes.
-          [:style (make-spinner book)]
-          ;; The interior pages.
-          (doall
-           (map (fn [page]
-                  (let [pic (Math.floor (/ page 2))]
-                    (if (odd? page)
-                      [:div.face.page
-                       {:key (str "page" page)
-                        :style
-                        {:width (px width)
-                         :height (px height)
-                         :transform (trans (tz (- (/ spine-width 2)
-                                                  (+ (/ page 10) 0.1)))
-                                           (x 0))}}
-                       [:div
-                        {:style
-                         {:width (px width)
-                          :height (px height)
-                          image-property (simg images (str book "/p0" pic ".jpg"))
-                          :background-size (str (px (* width 2)) " " (px height))
-                          :transform-origin "left top"
-                          :background-position (str (px (- width)) " "
-                                                    (px height))}
-                         :class (str "face page page" page)
-                         ;; The click here doesn't work?
-                         :on-click oc
-                         :id (page-id book (str "page" page))}]]
-                      ;; Even pages.
-                      [:div.face.page
-                       {:key (str "page" page)
-                        :style {:width (px width)
-                                :height (px height)
-                                :transform (trans (z 180)
-                                                  (tz (- (/ spine-width 2)
-                                                         (+ (/ page 10) 0.1)))
-                                                  (x 180))}}
-                       [:div
-                        {:style
-                         {:width (px width)
-                          :height (px height)
-                          image-property (simg images (str book "/p0" pic ".jpg"))
-                          :background-size (str (px (* width 2)) " " (px height))
-                          :transform-origin "right bottom"}
-                         :class (str "face page page" page)
-                         :on-click oc
-                         :id (page-id book (str "page" page))}]])))
-                (reverse (range 0 8))))
-          [:div.face
-           {:style {:width (px width)
-                    :height (px height)
-                    :transform (trans (y 0) (tz (/ spine-width 2)))}}
-           [:div.face.front
-            {:style {image-property (simg images (str book "/01.jpg"))
-                     :width (px width)
-                     :height (px height)
-                     :background-size (str (px width) " " (px height))
-                     :transform-origin "left top"}
-             :id (page-id book "front")
-             :on-click oc}]]
-          [:div.face.back
-           {:style {image-property (simg images (str book "/02.jpg"))
-                    :width (px width)
-                    :height (px height)
-                    :background-size (str (px width) " " (px height))
-                    :transform (trans (y 180) (tz (/ spine-width 2)))}
-            :id (page-id book "back")
-            :on-click oc}]
-          [:div.face.left
-           {:style {:background-image (img images (str book "/03.jpg"))
-                    :width (px spine-width)
-                    :height (px height)
-                    :background-size (str (px spine-width) " " (px height))
-                    :left (px (- (/ width 2) (/ spine-width 2)))
-                    :transform (trans (y -90) (tz (/ width 2)))}
-            :id (page-id book "left")
-            :on-click oc}]
-          [:div.face.right
-           {:style {image-property (simg images (str "pages/" ear "/01.jpg"))
-                    :width (px spine-width)
-                    :height (px height)
-                    :background-size (str (px spine-width) " " (px height))
-                    :left (px (- (/ width 2) (/ spine-width 2)))
-                    :transform (trans (y 90) (tz (/ width 2)))}
-            :id (page-id book "right")
-            :on-click oc}]
-          [:div.face.top
-           {:style {image-property (simg images (str "pages/" ear "/02.jpg"))
-                    :width (px width)
-                    :height (px spine-width)
-                    :background-size (str (px width) " " (px spine-width))
-                    :top (px (- (/ height 2) (/ spine-width 2)))
-                    :transform (trans (x 90) (tz (/ height 2)))}
-            :id (page-id book "top")
-            :on-click oc}]
-          [:div.face.bottom
-           {:style {image-property (img images (str "pages/" ear "/03.jpg"))
-                    :width (px width)
-                    :height (px spine-width)
-                    :background-size (str (px width) " " (px spine-width))
-                    :top (px (- (/ height 2) (/ spine-width 2)))
-                    :transform (trans (x -90) (tz (/ height 2)))}
-            :id (page-id book "bottom")
-            :on-click oc}]]]]]])))
+      [:div.book
+       {:id id
+        :on-click (if on-click
+                    (on-click state)
+                    #(read-book book id state))
+        :style (if spines-only
+                 {:animation-duration (str (+ (rand 10) 5) "s")
+                  :transform (trans (tz 0)
+                                    (str "translateX("
+                                         (/ spine-width shrink) "px)")
+                                    (y 90)
+                                    (x 5)
+                                    (str " scale(0.5)")
+                                    (str " scaleZ(0.5)"))}
+                 {:animation-duration (str (+ (rand 10) 5) "s")
+                  :transform-style "preserve-3d"
+                  :width (px width)
+                  :height (px height)
+                  :animation-name (str "spinner-" book)})}
+       ;; The spinner animation keyframes.
+       [:style (make-spinner book)]
+       ;; The interior pages.
+       (doall
+        (map (fn [page]
+               (let [pic (Math.floor (/ page 2))]
+                 (if (odd? page)
+                   [:div.face.page
+                    {:key (str "page" page)
+                     :style
+                     {:width (px width)
+                      :height (px height)
+                      :transform (trans (tz (- (/ spine-width 2)
+                                               (+ (/ page 10) 0.1)))
+                                        (x 0))}}
+                    [:div
+                     {:style
+                      {:width (px width)
+                       :height (px height)
+                       image-property (simg images (str book "/p0" pic ".jpg"))
+                       :background-size (str (px (* width 2)) " " (px height))
+                       :transform-origin "left top"
+                       :background-position (str (px (- width)) " "
+                                                 (px height))}
+                      :class (str "face page page" page)
+                      ;; The click here doesn't work?
+                      :on-click oc
+                      :id (page-id book (str "page" page))}]]
+                   ;; Even pages.
+                   [:div.face.page
+                    {:key (str "page" page)
+                     :style {:width (px width)
+                             :height (px height)
+                             :transform (trans (z 180)
+                                               (tz (- (/ spine-width 2)
+                                                      (+ (/ page 10) 0.1)))
+                                               (x 180))}}
+                    [:div
+                     {:style
+                      {:width (px width)
+                       :height (px height)
+                       image-property (simg images (str book "/p0" pic ".jpg"))
+                       :background-size (str (px (* width 2)) " " (px height))
+                       :transform-origin "right bottom"}
+                      :class (str "face page page" page)
+                      :on-click oc
+                      :id (page-id book (str "page" page))}]])))
+             (reverse (range 0 8))))
+       [:div.face
+        {:style {:width (px width)
+                 :height (px height)
+                 :transform (trans (y 0) (tz (/ spine-width 2)))}}
+        [:div.face.front
+         {:style {image-property (simg images (str book "/01.jpg"))
+                  :width (px width)
+                  :height (px height)
+                  :background-size (str (px width) " " (px height))
+                  :transform-origin "left top"}
+          :id (page-id book "front")
+          :on-click oc}]]
+       [:div.face.back
+        {:style {image-property (simg images (str book "/02.jpg"))
+                 :width (px width)
+                 :height (px height)
+                 :background-size (str (px width) " " (px height))
+                 :transform (trans (y 180) (tz (/ spine-width 2)))}
+         :id (page-id book "back")
+         :on-click oc}]
+       [:div.face.left
+        {:style {:background-image (img images (str book "/03.jpg"))
+                 :width (px spine-width)
+                 :height (px height)
+                 :background-size (str (px spine-width) " " (px height))
+                 :left (px (- (/ width 2) (/ spine-width 2)))
+                 :transform (trans (y -90) (tz (/ width 2)))}
+         :id (page-id book "left")
+         :on-click oc}]
+       [:div.face.right
+        {:style {image-property (simg images (str "pages/" ear "/01.jpg"))
+                 :width (px spine-width)
+                 :height (px height)
+                 :background-size (str (px spine-width) " " (px height))
+                 :left (px (- (/ width 2) (/ spine-width 2)))
+                 :transform (trans (y 90) (tz (/ width 2)))}
+         :id (page-id book "right")
+         :on-click oc}]
+       [:div.face.top
+        {:style {image-property (simg images (str "pages/" ear "/02.jpg"))
+                 :width (px width)
+                 :height (px spine-width)
+                 :background-size (str (px width) " " (px spine-width))
+                 :top (px (- (/ height 2) (/ spine-width 2)))
+                 :transform (trans (x 90) (tz (/ height 2)))}
+         :id (page-id book "top")
+         :on-click oc}]
+       [:div.face.bottom
+        {:style {image-property (img images (str "pages/" ear "/03.jpg"))
+                 :width (px width)
+                 :height (px spine-width)
+                 :background-size (str (px width) " " (px spine-width))
+                 :top (px (- (/ height 2) (/ spine-width 2)))
+                 :transform (trans (x -90) (tz (/ height 2)))}
+         :id (page-id book "bottom")
+         :on-click oc}]]])))
 
 (defn wait-for-images [[images id html] & callback]
   (let [loaded (fn [node url]
@@ -308,10 +301,7 @@
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
-     [:div {:style {:transform-style "preserve-3d"}}
-      (wait-for-images (make-book (nth bs 15)))
-      (wait-for-images (make-book (nth bs 35)))
-      (wait-for-images (make-book (nth bs 55)))]]))
+     (wait-for-images (make-book (nth bs 55)))]))
 
 (defn set-background-image [images class book]
   (let [style (find-style (page-id book class))
@@ -410,10 +400,19 @@
       ;; transition from.
       (let [node (find-node (book-id book))
             style (.-style node)]
-        (set! (.-transform (find-style (str "outer-" book)))
-              (js/window.getRotation (find-node (str "outer-" book))))
-        (prn (js/window.getRotation (find-node (str "outer-" book))))
-        (remove-class (cont-id book) "spinning")))
+        (set! (.-transform style) (js/window.getRotation node))
+        (set! (.-animationName style) "")
+        (reset! state :put-back)
+        ;; Chrome needs to do a reflow before adding the transition class.
+        (js/setTimeout (fn []
+                         (add-class (book-id book) "put-back-book")
+                         (add-class (cont-id book) "put-back-cont")
+                         (js/setTimeout
+                          (fn []
+                            (remove-class (book-id book) "put-back-book")
+                            (add-class (book-id book) (str "put-back-book-" book)))
+                          3000))
+                       10)))
     true (read-book book (book-id book) state)))
 
 (defn make-library [books]
@@ -458,7 +457,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (r/render [library] (.getElementById js/document "app")))
+  (r/render [spinning] (.getElementById js/document "app")))
 
 (defn init! []
   (mount-root))
