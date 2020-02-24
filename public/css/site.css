@@ -93,6 +93,17 @@ a:hover {
   transform: rotateY(-160deg) !important;
 }
 
+.open-4 div.front, .open-4 .page0, .open-4 .page1, .open-4 .page2,
+.open-4 .page3, .open-4 .page4, .open-4 .page5, .open-4 .page6 {
+  transition: all 2s;
+  transform: rotateY(-170deg) !important;
+}
+
+.open-4 .page6 {
+  transition: all 2s;
+  transform: rotateY(-160deg) !important;
+}
+
 
 .normal {
   transition: all 1s;
@@ -100,7 +111,8 @@ a:hover {
 }
 
 .closing div.front, .closing .page0, .closing .page1, .closing .page2,
-.closing .page3, .closing .page4, .closing .page5, .closing .page6 {
+.closing .page3, .closing .page4, .closing .page5, .closing .page6,
+.closing .page7 {
   transition: all 5s;
   transform: rotateY(0deg) !important;
 }

@@ -110,8 +110,13 @@
         (.add (.-classList node) "open-3"))
       (= @state :open-3)
       (do
-        (reset! state :spinning)
+        (reset! state :open-4)
         (.remove (.-classList node) "open-3")
+        (.add (.-classList node) "open-4"))
+      (= @state :open-4)
+      (do
+        (reset! state :spinning)
+        (.remove (.-classList node) "open-4")
         (.add (.-classList node) "normal")
         (.add (.-classList node) "closing")
         (js/setTimeout
@@ -208,7 +213,7 @@
                       :class (str "face page page" page)
                       :on-click oc
                       :id (page-id book (str "page" page))}]])))
-             (reverse (range 0 7))))
+             (reverse (range 0 8))))
        [:div.face
         {:style {:width (px width)
                  :height (px height)
@@ -338,7 +343,7 @@
       (let [images (atom {})]
         (doseq [class '("front" "back" "right" "top" "bottom"
                         "page0" "page1" "page2" "page3" "page4" "page5"
-                        "page6")]
+                        "page6" "page7")]
           (set-background-image images class book))
         (r/render
          (wait-for-images
