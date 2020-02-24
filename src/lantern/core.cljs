@@ -150,10 +150,11 @@
                     #(read-book book id state))
         :style (if spines-only
                  {:animation-duration (str (+ (rand 10) 5) "s")
-                  :transform (trans (y 90)
-                                    (x 5)
-                                    (str "translateZ("
+                  :transform (trans (str "translateX("
                                          (/ spine-width shrink) "px)")
+                                    (tz 0)
+                                    (y 90)
+                                    (x 5)
                                     (str " scale(0.5)")
                                     (str " scaleZ(0.5)"))}
                  {:animation-duration (str (+ (rand 10) 5) "s")
@@ -322,6 +323,7 @@
 
 (defn take-out-library-book [id book width state]
   (prn "taking out" id state)
+  (set! (.-zIndex (find-style id)) (swap! book-z-index inc))
   (cond
     (= @state :put-back)
     (do
@@ -334,8 +336,7 @@
           start (.getTime (js/Date.))
           style (find-style id)]
       (add-class (book-id book) "take-out-slide")
-      (set! (.-zIndex style) @book-z-index)
-      (swap! book-z-index inc)
+      (set! (.-zIndex style) (swap! book-z-index inc))
       (let [images (atom {})]
         (doseq [class '("front" "back" "right" "top" "bottom"
                         "page0" "page1" "page2" "page3" "page4" "page5"
@@ -387,10 +388,8 @@
         (js/setTimeout (fn []
                          (add-class (book-id book) (str "put-back-book-" book))
                          (add-class (cont-id book) "put-back-cont"))
-                       10)
-        ))
-    true (do
-           (read-book book (book-id book) state))))
+                       10)))
+    true (read-book book (book-id book) state)))
 
 (defn make-library [books]
   (let [shrink 8]

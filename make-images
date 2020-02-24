@@ -1,0 +1,13 @@
+#!/bin/bash
+
+cd ~/lanterne
+
+for dir in [0-9]*[0-9]; do
+    echo $dir
+    if [ ! -d small/$dir ]; then
+	mkdir small/$dir
+	for image in $dir/*.jpg; do
+	    convert -resize 50% $image small/$image
+	done
+    fi
+done
