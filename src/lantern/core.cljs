@@ -78,7 +78,6 @@
 (defn read-book [book id state]
   (let [node (.getElementById js/document id)
         style (.-style node)]
-    (prn state id)
     (cond
       (= @state :spinning)
       (do
@@ -122,7 +121,6 @@
         (.add (.-classList node) "closing")
         (js/setTimeout
          (fn []
-           (prn "Starting to spin")
            (when (= (.-animationName style) "")
              (set! (.-animationName style) (str "spinner-" book)))
            (.remove (.-classList node) "normal"))
@@ -391,7 +389,6 @@
         (set! (.-transform style) (js/window.getRotation node))
         (set! (.-animationName style) "")
         (reset! state :put-back)
-        (prn "Putting back in")
         ;; Chrome needs to do a reflow before adding the transition class.
         (js/setTimeout (fn []
                          (add-class (book-id book) "put-back-book")
