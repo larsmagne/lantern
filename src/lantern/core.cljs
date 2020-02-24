@@ -65,7 +65,7 @@
            (concat
             (map (fn [i xv yv zv]
                    (str (* i 20) "% { transform: "
-                        (trans (tz 200) (x xv) (y yv) (z zv))
+                        (trans (tz 400) (x xv) (y yv) (z zv))
                         "; } "))
                  (range 1 5)
                  (randoms)
