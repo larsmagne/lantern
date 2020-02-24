@@ -8,7 +8,8 @@ body {
   color: white;
   line-height: 1.5em;
   background: black;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   scrollbar-color: #00c000 #003000;
 }
 
