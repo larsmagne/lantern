@@ -75,57 +75,58 @@
             (list "100% { transform: translateZ(200px) rotateY(360deg) rotateX(360deg) rotateZ(360deg); }}"))
            (str "@keyframes spinner-" name " { 0% { transform: translateZ(200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "))))                     
 
+(defmulti read-book-state #'identity)
+
+(defmethod read-book-state :spinning [_ book id state]
+  ;; Set the current animation 3d transform so we have something to
+  ;; transition from.
+  (set! (.-transform (find-style id)) (js/window.getRotation (find-node id)))
+  (set! (.-animationName (find-style id)) "")
+  (reset! state :front)
+  ;; Chrome needs to do a reflow before adding the transition class.
+  (js/setTimeout #(add-class id "see-front") 10))
+
+(defmethod read-book-state :front [_ book id state]
+  (prn book id state)
+  (reset! state :back)
+  (remove-class id "see-front")
+  (add-class id "see-back"))
+
+(defmethod read-book-state :back [_ book id state]
+  (reset! state :open-1)
+  (remove-class id "see-back")
+  (add-class id "open-1"))
+
+(defmethod read-book-state :open-1 [_ book id state]
+  (reset! state :open-2)
+  (remove-class id "open-1")
+  (add-class id "open-2"))
+
+(defmethod read-book-state :open-2 [_ book id state]
+  (reset! state :open-3)
+  (remove-class id "open-2")
+  (add-class id "open-3"))
+
+(defmethod read-book-state :open-3 [_ book id state]
+  (reset! state :open-4)
+  (remove-class id "open-3")
+  (add-class id "open-4"))
+
+(defmethod read-book-state :open-4 [_ book id state]
+  (reset! state :spinning)
+  (remove-class id "open-4")
+  (add-class id "normal")
+  (add-class id "closing")
+  (js/setTimeout
+   (fn []
+     (when (= (.-animationName (find-style id)) "")
+       (set! (.-animationName (find-style id)) (str "spinner-" book)))
+     (remove-class id "normal"))
+   1000)
+  (js/setTimeout #(remove-class id "closing") 5000))
+
 (defn read-book [book id state]
-  (let [node (.getElementById js/document id)
-        style (.-style node)]
-    (cond
-      (= @state :spinning)
-      (do
-        ;; Set the current animation 3d transform so we have something to
-        ;; transition from.
-        (set! (.-transform style) (js/window.getRotation node))
-        (set! (.-animationName style) "")
-        (reset! state :front)
-        ;; Chrome needs to do a reflow before adding the transition class.
-        (js/setTimeout #(.add (.-classList node) "see-front") 10))
-      (= @state :front)
-      (do
-        (reset! state :back)
-        (.remove (.-classList node) "see-front")
-        (.add (.-classList node) "see-back"))
-      (= @state :back)
-      (do
-        (reset! state :open-1)
-        (.remove (.-classList node) "see-back")
-        (.add (.-classList node) "open-1"))
-      (= @state :open-1)
-      (do
-        (reset! state :open-2)
-        (.remove (.-classList node) "open-1")
-        (.add (.-classList node) "open-2"))
-      (= @state :open-2)
-      (do
-        (reset! state :open-3)
-        (.remove (.-classList node) "open-2")
-        (.add (.-classList node) "open-3"))
-      (= @state :open-3)
-      (do
-        (reset! state :open-4)
-        (.remove (.-classList node) "open-3")
-        (.add (.-classList node) "open-4"))
-      (= @state :open-4)
-      (do
-        (reset! state :spinning)
-        (.remove (.-classList node) "open-4")
-        (.add (.-classList node) "normal")
-        (.add (.-classList node) "closing")
-        (js/setTimeout
-         (fn []
-           (when (= (.-animationName style) "")
-             (set! (.-animationName style) (str "spinner-" book)))
-           (.remove (.-classList node) "normal"))
-         1000)
-        (js/setTimeout #(.remove (.-classList node) "closing") 5000)))))
+  (read-book-state @state book id state))
 
 (defn make-book [[book spine-width pages spines-only on-click]]
   (let [images (atom {})
