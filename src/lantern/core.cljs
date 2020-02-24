@@ -313,16 +313,16 @@
                   (nth pos 1)
                   (/ 2256 8))
                "px; }"
-               ".put-back-book-" book " { transition: all 5s; transform: rotateY(90deg) rotateX(5deg) scale(0.5) scaleZ(0.5) translateZ("
-               (/ spine-width 8)
-               "px) !important; width: 0px !important; height: 0px !important; }"
+               ".put-back-book-" book " { transition: all 1s; transform: translateZ(0px) translateX("
+               (/ spine-width 16)
+               "px) rotateY(90deg) rotateX(5deg) scale(0.5) scaleZ(0.5) !important; width: 0px !important; height: 0px !important; }"
                ))))
 
 (defonce book-z-index (atom 1))
 
 (defn take-out-library-book [id book width state]
   (prn "taking out" id state)
-  ;;(set! (.-zIndex (find-style id)) (swap! book-z-index inc))
+  (set! (.-zIndex (find-style id)) (swap! book-z-index inc))
   (cond
     (= @state :put-back)
     (do
@@ -385,8 +385,13 @@
         (prn "Putting back in")
         ;; Chrome needs to do a reflow before adding the transition class.
         (js/setTimeout (fn []
-                         (add-class (book-id book) (str "put-back-book-" book))
-                         (add-class (cont-id book) "put-back-cont"))
+                         (add-class (book-id book) "put-back-book")
+                         (add-class (cont-id book) "put-back-cont")
+                         (js/setTimeout
+                          (fn []
+                            (remove-class (book-id book) "put-back-book")
+                            (add-class (book-id book) (str "put-back-book-" book)))
+                          3000))
                        10)))
     true (read-book book (book-id book) state)))
 
