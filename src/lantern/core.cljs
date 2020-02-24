@@ -61,19 +61,26 @@
              (range 0 5))))
 
 (defn make-spinner [name]
-  (reduce #'str
-          (conj
-           (concat
-            (map (fn [i xv yv zv]
-                   (str (* i 20) "% { transform: "
-                        (trans (tz 400) (x xv) (y yv) (z zv))
-                        "; } "))
-                 (range 1 5)
-                 (randoms)
-                 (randoms)
-                 (randoms))
-            (list "100% { transform: translateZ(200px) rotateY(360deg) rotateX(360deg) rotateZ(360deg); }}"))
-           (str "@keyframes spinner-" name " { 0% { transform: translateZ(200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "))))                     
+  (let [xv (Math.round (rand 10))
+        yv (Math.round (rand 10))
+        zv (Math.round (rand 10))]
+    ;; The idea here is that we want to spint along all three axis --
+    ;; smoothy, but at random speeds (so that X is slower or faster
+    ;; than Y etc), so that each book spins uniquely.  But smoothly.
+    (reduce #'str
+            (conj
+             (map (fn [i]
+                    (prn (x (* (/ i 100) xv 360))
+                         (y (* (/ i 100) yv 360))
+                         (z (* (/ i 100) zv 360)))
+                    (str i "% { transform: "
+                         (trans (tz 400)
+                                (x (* (/ i 100) xv 360))
+                                (y (* (/ i 100) yv 360))
+                                (z (* (/ i 100) zv 360)))
+                         "; }"))
+                  (range 1 101))
+             (str "@keyframes spinner-" name " { 0% { transform: translateZ(200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "))))                     )
 
 (defmulti read-book-state #'identity)
 
@@ -158,7 +165,7 @@
                     (on-click state)
                     #(read-book book id state))
         :style (if spines-only
-                 {:animation-duration (str (+ (rand 10) 5) "s")
+                 {:animation-duration (str (+ (rand 10) 50) "s")
                   :transform (trans (tz 0)
                                     (str "translateX("
                                          (/ spine-width shrink) "px)")
@@ -166,7 +173,7 @@
                                     (x 5)
                                     (str " scale(0.5)")
                                     (str " scaleZ(0.5)"))}
-                 {:animation-duration (str (+ (rand 10) 5) "s")
+                 {:animation-duration (str (+ (rand 10) 50) "s")
                   :transform-style "preserve-3d"
                   :width (px width)
                   :height (px height)
@@ -301,7 +308,9 @@
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
-     (wait-for-images (make-book (nth bs 55)))]))
+     (wait-for-images (make-book (nth bs 55)))
+     (wait-for-images (make-book (nth bs 33)))
+     (wait-for-images (make-book (nth bs 32)))]))
 
 (defn set-background-image [images class book]
   (let [style (find-style (page-id book class))
@@ -457,7 +466,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (r/render [spinning] (.getElementById js/document "app")))
+  (r/render [library] (.getElementById js/document "app")))
 
 (defn init! []
   (mount-root))
