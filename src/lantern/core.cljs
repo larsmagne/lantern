@@ -94,6 +94,7 @@
 
 (defmethod read-book-state :back [_ book id state]
   (reset! state :open-1)
+  (remove-class id "hide-pages")
   (remove-class id "see-back")
   (add-class id "open-1"))
 
@@ -123,7 +124,10 @@
        (set! (.-animationName (find-style id)) (str "spinner-" book)))
      (remove-class id "normal"))
    1000)
-  (js/setTimeout #(remove-class id "closing") 5000))
+  (js/setTimeout (fn []
+                   (add-class id "hide-pages")
+                   (remove-class id "closing"))
+                 5000))
 
 (defn read-book [book id state]
   (read-book-state @state book id state))
@@ -173,7 +177,7 @@
         (map (fn [page]
                (let [pic (Math.floor (/ page 2))]
                  (if (odd? page)
-                   [:div.face
+                   [:div.face.page
                     {:key (str "page" page)
                      :style
                      {:width (px width)
@@ -195,7 +199,7 @@
                       :on-click oc
                       :id (page-id book (str "page" page))}]]
                    ;; Even pages.
-                   [:div.face
+                   [:div.face.page
                     {:key (str "page" page)
                      :style {:width (px width)
                              :height (px height)
