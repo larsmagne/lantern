@@ -455,7 +455,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (r/render [spinning] (.getElementById js/document "app")))
+  (r/render [library] (.getElementById js/document "app")))
 
 (defn init! []
   (mount-root))
