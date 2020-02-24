@@ -55,32 +55,20 @@
 (defn trans [& elems]
   (reduce str (interpose " " elems)))
 
-(defn randoms []
-  (sort (map (fn [_]
-               (Math/floor (rand 360)))
-             (range 0 5))))
+(defn spin-degrees []
+  (* (Math.round (rand 10)) 360))
 
 (defn make-spinner [name]
-  (let [xv (Math.round (rand 10))
-        yv (Math.round (rand 10))
-        zv (Math.round (rand 10))]
-    ;; The idea here is that we want to spint along all three axis --
-    ;; smoothy, but at random speeds (so that X is slower or faster
-    ;; than Y etc), so that each book spins uniquely.  But smoothly.
-    (reduce #'str
-            (conj
-             (map (fn [i]
-                    (prn (x (* (/ i 100) xv 360))
-                         (y (* (/ i 100) yv 360))
-                         (z (* (/ i 100) zv 360)))
-                    (str i "% { transform: "
-                         (trans (tz 400)
-                                (x (* (/ i 100) xv 360))
-                                (y (* (/ i 100) yv 360))
-                                (z (* (/ i 100) zv 360)))
-                         "; }"))
-                  (range 1 101))
-             (str "@keyframes spinner-" name " { 0% { transform: translateZ(200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "))))                     )
+  ;; The idea here is that we want to spint along all three axis --
+  ;; smoothy, but at random speeds (so that X is slower or faster
+  ;; than Y etc), so that each book spins uniquely.  But smoothly.
+  (str "@keyframes spinner-" name " { 0% { transform: translateZ(200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "
+       " 100% { transform: "
+       (trans (tz 400)
+              (x (spin-degrees))
+              (y (spin-degrees))
+              (z (spin-degrees)))
+       ";}}"))
 
 (defmulti read-book-state #'identity)
 
@@ -305,6 +293,7 @@
            @images)]]))
 
 (defn spinning []
+  (prn (make-spinner "foo"))
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
@@ -466,7 +455,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (r/render [library] (.getElementById js/document "app")))
+  (r/render [spinning] (.getElementById js/document "app")))
 
 (defn init! []
   (mount-root))
