@@ -304,19 +304,18 @@
 
 (defn make-center [book spine-width]
   (let [pos (js->clj (js/getPosition (find-node (str "library-book-" book))))]
-    (prn pos)
     (set! (.-innerHTML (find-node (str (str "library-book-style-" book))))
           (str ".center-" book " { transition: all 2s; transition-timing-function: linear; margin-left: "
                (- (/ (.-innerWidth js/window) 2) (first pos))
                "px; margin-top: "
-               (- (/ (.-innerHeight js/window) 2)
-                  (nth pos 1)
-                  (/ 2256 8))
+               (+ (.-scrollTop (find-node "html"))
+                  (- (/ (.-innerHeight js/window) 2)
+                     (nth pos 1)
+                     (/ 2256 8)))
                "px; }"
                ".put-back-book-" book " { transition: all 1s; transform: translateZ(0px) translateX("
                (/ spine-width 16)
-               "px) rotateY(90deg) rotateX(5deg) scale(0.5) scaleZ(0.5) !important; width: 0px !important; height: 0px !important; }"
-               ))))
+               "px) rotateY(90deg) rotateX(5deg) scale(0.5) scaleZ(0.5) !important; width: 0px !important; height: 0px !important; }"))))
 
 (defonce book-z-index (atom 1))
 
