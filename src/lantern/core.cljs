@@ -1,6 +1,7 @@
 (ns lantern.core
     (:require
      [reagent.core :as r]
+     [clojure.string :as string]
      [cljs.reader :refer [read-string]]))
 
 (defn book-id [book]
@@ -323,10 +324,15 @@
                "px) rotateY(90deg) rotateX(5deg) scale(0.5) scaleZ(0.5) !important; width: 0px !important; height: 0px !important; }"))))
 
 (defonce book-z-index (atom 1))
+(defn z-index [id]
+  ;; Messing with z-index messes clicks on the objects up on Chrome,
+  ;; but Firefox needs it.
+  (when (string/includes? (.-userAgent js/navigator) "Firefox")
+    (set! (.-zIndex (find-style id)) (swap! book-z-index inc))))
 
 (defn take-out-library-book [id book width state]
   (prn "taking out" id state)
-  ;;(set! (.-zIndex (find-style id)) (swap! book-z-index inc))
+  (z-index id)
   (cond
     (= @state :put-back)
     (do
@@ -336,10 +342,9 @@
       (add-class (book-id book) "see-front"))
     (= @state :spine)
     (let [done (atom false)
-          start (.getTime (js/Date.))
-          style (find-style id)]
+          start (.getTime (js/Date.))]
       (add-class (book-id book) "take-out-slide")
-      ;;(set! (.-zIndex style) (swap! book-z-index inc))
+      (z-index id)
       (let [images (atom {})]
         (doseq [class '("front" "back" "right" "top" "bottom"
                         "page0" "page1" "page2" "page3" "page4" "page5"
