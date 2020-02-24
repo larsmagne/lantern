@@ -342,6 +342,14 @@
     (let [done (atom false)
           start (.getTime (js/Date.))]
       (add-class (book-id book) "take-out-slide")
+      ;; If we don't get all the images, roll back.
+      (js/setTimeout
+       (fn []
+         (when (not @done)
+           (reset! done true)
+           (remove-class (book-id book) "take-out-slide")
+           (reset! state :spine)))
+       5000)
       (z-index id)
       (let [images (atom {})]
         (doseq [class '("front" "back" "right" "top" "bottom"
