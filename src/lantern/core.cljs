@@ -59,20 +59,20 @@
                (Math/floor (rand 360)))
              (range 0 5))))
 
-(defn make-keyframes [name]
+(defn make-spinner [name]
   (reduce #'str
           (conj
            (concat
             (map (fn [i xv yv zv]
                    (str (* i 20) "% { transform: "
-                        (trans (x xv) (y yv) (z zv))
+                        (trans (tz 200) (x xv) (y yv) (z zv))
                         "; } "))
                  (range 1 5)
                  (randoms)
                  (randoms)
                  (randoms))
-            (list "100% { transform: translateZ(-50px) rotateY(360deg) rotateX(360deg) rotateZ(360deg); }}"))
-           (str "@keyframes spinner-" name " { 0% { transform: translateZ(-50px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "))))                     
+            (list "100% { transform: translateZ(200px) rotateY(360deg) rotateX(360deg) rotateZ(360deg); }}"))
+           (str "@keyframes spinner-" name " { 0% { transform: translateZ(200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "))))                     
 
 (defn read-book [book id state]
   (let [node (.getElementById js/document id)
@@ -162,7 +162,7 @@
                   :height (px height)
                   :animation-name (str "spinner-" book)})}
        ;; The spinner animation keyframes.
-       [:style (make-keyframes book)]
+       [:style (make-spinner book)]
        ;; The interior pages.
        (doall
         (map (fn [page]
