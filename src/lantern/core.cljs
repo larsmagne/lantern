@@ -167,6 +167,7 @@
                                     (str " scale(0.5)")
                                     (str " scaleZ(0.5)"))}
                  {:animation-duration (str (+ (rand 10) 5) "s")
+                  :transform-style "preserve-3d"
                   :width (px width)
                   :height (px height)
                   :animation-name (str "spinner-" book)})}
@@ -300,7 +301,7 @@
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
-     (wait-for-images (make-book (nth bs 40)))]))
+     (wait-for-images (make-book (nth bs 55)))]))
 
 (defn set-background-image [images class book]
   (let [style (find-style (page-id book class))
@@ -456,7 +457,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (r/render [library] (.getElementById js/document "app")))
+  (r/render [spinning] (.getElementById js/document "app")))
 
 (defn init! []
   (mount-root))
