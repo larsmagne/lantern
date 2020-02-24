@@ -150,9 +150,9 @@
                     #(read-book book id state))
         :style (if spines-only
                  {:animation-duration (str (+ (rand 10) 5) "s")
-                  :transform (trans (str "translateX("
+                  :transform (trans (tz 0)
+                                    (str "translateX("
                                          (/ spine-width shrink) "px)")
-                                    (tz 0)
                                     (y 90)
                                     (x 5)
                                     (str " scale(0.5)")
@@ -202,7 +202,6 @@
                      {:style
                       {:width (px width)
                        :height (px height)
-                       :background-color "red"
                        image-property (simg images (str book "/p0" pic ".jpg"))
                        :background-size (str (px (* width 2)) " " (px height))
                        :transform-origin "right bottom"}
@@ -307,14 +306,14 @@
   (let [pos (js->clj (js/getPosition (find-node (str "library-book-" book))))]
     (prn pos)
     (set! (.-innerHTML (find-node (str (str "library-book-style-" book))))
-          (str ".center-" book " { transition: all 2s; transform-style: preserve-3d; transition-timing-function: linear; margin-left: "
+          (str ".center-" book " { transition: all 2s; transition-timing-function: linear; margin-left: "
                (- (/ (.-innerWidth js/window) 2) (first pos))
                "px; margin-top: "
                (- (/ (.-innerHeight js/window) 2)
                   (nth pos 1)
                   (/ 2256 8))
                "px; }"
-               ".put-back-book-" book " { transition: all 5s; transform-style: preserve-3d; transform: rotateY(90deg) rotateX(5deg) scale(0.5) scaleZ(0.5) translateZ("
+               ".put-back-book-" book " { transition: all 5s; transform: rotateY(90deg) rotateX(5deg) scale(0.5) scaleZ(0.5) translateZ("
                (/ spine-width 8)
                "px) !important; width: 0px !important; height: 0px !important; }"
                ))))
@@ -323,7 +322,7 @@
 
 (defn take-out-library-book [id book width state]
   (prn "taking out" id state)
-  (set! (.-zIndex (find-style id)) (swap! book-z-index inc))
+  ;;(set! (.-zIndex (find-style id)) (swap! book-z-index inc))
   (cond
     (= @state :put-back)
     (do
@@ -336,7 +335,7 @@
           start (.getTime (js/Date.))
           style (find-style id)]
       (add-class (book-id book) "take-out-slide")
-      (set! (.-zIndex style) (swap! book-z-index inc))
+      ;;(set! (.-zIndex style) (swap! book-z-index inc))
       (let [images (atom {})]
         (doseq [class '("front" "back" "right" "top" "bottom"
                         "page0" "page1" "page2" "page3" "page4" "page5"
@@ -359,12 +358,12 @@
                         (set! (.-left cont-style) (px (- (/ 1392 8))))
                         (add-class (book-id book) "see-front")
                         (make-center book width)
-                        (add-class (cont-id book)
-                                   (str "center-" book))
+                        (add-class (cont-id book) (str "center-" book))
                         (js/setTimeout
                          (fn []
                            (set! (.-height style) (px (/ 2256 4)))
-                           (set! (.-top cont-style) (px (/ 2256 16))))
+                           ;;(set! (.-top cont-style) (px (/ 2256 4)))
+                           )
                          2000)))
                     lapsed (- (.getTime (js/Date.)) start)]
                 ;; Always give the first transition (pulling

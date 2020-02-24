@@ -42,7 +42,6 @@ a:hover {
 }
 
 .book {
-  transform-style: preserve-3d;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
@@ -51,7 +50,6 @@ a:hover {
   position: absolute;
   top: 0px;
   left: 0px;
-  transform-style: preserve-3d;
   backface-visibility: hidden;
 }
 
@@ -69,14 +67,12 @@ a:hover {
 
 .see-front {
   transition: all 2s;
-  transform-style: preserve-3d;
-  transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1.5) scaleZ(1.5) !important;
+  transform: translateZ(200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) !important;
 }
 
 .see-front div.front, .see-front #page0, .see-front #page1, .see-front #page2,
 .see-front #page3, .see-front #page4, .see-front #page5, .see-front #page6 {
   transition: all 2s;
-  transform-style: preserve-3d;
   transform: rotateY(0deg) !important;
 }
 
@@ -84,58 +80,49 @@ a:hover {
 
 .see-back {
   transition: all 1s;
-  transform-style: preserve-3d;
   transform: rotateZ(10deg) rotateY(160deg) rotateX(0deg) scale(1.5) !important;
 }
 
 .open-1, .open-2, .open-3, .open-4 {
   transition: all 2s;
-  transform-style: preserve-3d;
   transform: rotateY(0deg) rotateX(0deg) rotateZ(-5deg) scale(1.5) translateX(300px) !important;
 }
 
 .open-1 div.front, .open-1 .page0 {
   transition: all 2s;
-  transform-style: preserve-3d;
   transform: rotateY(-170deg) !important;
 }
 
 .open-2 div.front, .open-2 .page0, .open-2 .page1, .open-2 .page2 {
   transition: all 2s;
-  transform-style: preserve-3d;
   transform: rotateY(-170deg) !important;
 }
 
 .open-2 .page2 {
   transition: all 2s;
-  transform-style: preserve-3d;
   transform: rotateY(-165deg) !important;
 }
 
 .open-3 div.front, .open-3 .page0, .open-3 .page1, .open-3 .page2,
 .open-3 .page3, .open-3 .page4 {
   transition: all 2s;
-  transform-style: preserve-3d;
   transform: rotateY(-170deg) !important;
 }
 
 .open-3 .page4 {
   transition: all 2s;
-  transform-style: preserve-3d;
   transform: rotateY(-160deg) !important;
 }
 
 
 .normal {
   transition: all 1s;
-  transform-style: preserve-3d;
   transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1) !important;
 }
 
 .closing div.front, .closing .page0, .closing .page1, .closing .page2,
 .closing .page3, .closing .page4, .closing .page5, .closing .page6 {
   transition: all 5s;
-  transform-style: preserve-3d;
   transform: rotateY(0deg) !important;
 }
 
@@ -147,7 +134,6 @@ a:hover {
 
 .fade-in {
   transition: all 3s;
-  transform-style: preserve-3d;
   opacity: 1 !important;
 }
 
@@ -160,32 +146,32 @@ a:hover {
 
 .library-book div {
   pointer-events: auto;
+  transform-style: preserve-3d;
 }
 
 .top-z {
   z-index: 1 !important;
 }
 
-div.library {
+.library {
   position: relative;
+  perspective: 300000px;
+  transform-style: preserve-3d;
 }
 
 .take-out-slide {
   transition: all 5s;
-  transform-style: preserve-3d;
   transition-timing-function: linear;
-  transform: rotateY(90deg) rotateX(5deg) scale(1) scaleZ(1) translateZ(100px) !important;
+  transform: translateZ(200px) rotateZ(0deg) rotateY(90deg) rotateX(5deg) !important;
 }
 
 .take-out-loaded {
   transition: all 5s;
-  transform-style: preserve-3d;
   transform: rotateY(30deg) rotateX(0deg) scale(1) scaleZ(1) !important;
 }
 
 .put-back-cont {
   transition: all 5s;
-  transform-style: preserve-3d;
   top: 0px !important;
   left: 0px !important;
   margin-top: 0px !important;
