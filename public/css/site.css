@@ -9,6 +9,7 @@ body {
   line-height: 1.5em;
   background: black;
   overflow: scroll;
+  scrollbar-color: #00c000 #003000;
 }
 
 a {
@@ -171,3 +172,25 @@ a:hover {
   width: 0px !important;
   height: 0px !important;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: black;
+}
+
+::-webkit-scrollbar-corner {
+  background: black;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #303030;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #404040;
+}
+
