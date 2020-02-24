@@ -120,7 +120,6 @@ a:hover {
 .book-container {
   /* opacity: 0; */
   position: absolute;
-  z-index: -1;
 }
 
 .fade-in {
@@ -138,10 +137,6 @@ a:hover {
 .library-book div {
   pointer-events: auto;
   transform-style: preserve-3d;
-}
-
-.top-z {
-  z-index: 1 !important;
 }
 
 .library {

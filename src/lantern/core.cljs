@@ -326,7 +326,7 @@
 
 (defn take-out-library-book [id book width state]
   (prn "taking out" id state)
-  (set! (.-zIndex (find-style id)) (swap! book-z-index inc))
+  ;;(set! (.-zIndex (find-style id)) (swap! book-z-index inc))
   (cond
     (= @state :put-back)
     (do
