@@ -58,7 +58,7 @@ a:hover {
 
 
 .see-back {
-  transition: all 1s;
+  transition: all 2s;
   transform: translateZ(400px) rotateZ(10deg) rotateY(160deg) rotateX(0deg) !important;
 }
 
