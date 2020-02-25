@@ -146,11 +146,6 @@ a:hover {
   transform: translateZ(200px) rotateZ(0deg) rotateY(90deg) rotateX(5deg) !important;
 }
 
-.take-out-loaded {
-  transition: all 5s;
-  transform: rotateY(30deg) rotateX(0deg) scale(1) scaleZ(1) !important;
-}
-
 .put-back-cont {
   transition: all 5s;
   top: 0px !important;
