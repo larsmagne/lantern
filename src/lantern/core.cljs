@@ -62,7 +62,7 @@
   ;; The idea here is that we want to spint along all three axis --
   ;; smoothy, but at random speeds (so that X is slower or faster
   ;; than Y etc), so that each book spins uniquely.  But smoothly.
-  (str "@keyframes spinner-" name " { 0% { transform: translateZ(800px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "
+  (str "@keyframes spinner-" name " { 0% { transform: translateZ(200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "
        " 100% { transform: "
        (trans (tz 400)
               (x (spin-degrees))
@@ -158,7 +158,9 @@
                                     (str "translateX("
                                          (/ spine-width shrink) "px)")
                                     (y 90)
-                                    (x 5))}
+                                    (x 5)
+                                    (str " scale(0.5)")
+                                    (str " scaleZ(0.5)"))}
                  {:animation-duration (str (+ (rand 10) 50) "s")
                   :transform-style "preserve-3d"
                   :width (px width)
@@ -321,7 +323,7 @@
                "px; }"
                ".put-back-book-" book " { transition: all 1s; transform: translateZ(0px) translateX("
                (/ spine-width 16)
-               "px) rotateY(90deg) rotateX(5deg) !important; width: 0px !important; height: 0px !important; }"))))
+               "px) rotateY(90deg) rotateX(5deg) scale(0.5) scaleZ(0.5) !important; width: 0px !important; height: 0px !important; }"))))
 
 (defonce book-z-index (atom 1))
 (def prev-click (atom nil))
@@ -334,8 +336,7 @@
 (defn take-out-library-book [id book width state]
   (prn "taking out" id state)
   (z-index id)
-  (when (and nil
-             (not (= book @prev-click)))
+  (when (not (= book @prev-click))
     (reset! prev-click book)
     (set! (.-transform (find-style (cont-id book)))
           (trans (tz (* 20 (swap! book-z-index inc))))))
@@ -375,16 +376,16 @@
                     (fn []
                       (let [style (find-style (book-id book))
                             cont-style (find-style (cont-id book))]
-                        (reset! state :front)
                         (remove-class (book-id book) "take-out-slide")
-                        ;(set! (.-left cont-style) (px (- (/ 1392 8))))
+                        (reset! state :front)
+                        (set! (.-width style) (px (/ 1392 4)))
+                        (set! (.-left cont-style) (px (- (/ 1392 8))))
                         (add-class (book-id book) "see-front")
                         (make-center book width)
                         (add-class (cont-id book) (str "center-" book))
                         (js/setTimeout
                          (fn []
                            (set! (.-height style) (px (/ 2256 4)))
-                           (set! (.-width style) (px (/ 1392 4)))
                            ;;(set! (.-top cont-style) (px (/ 2256 4)))
                            )
                          2000)))
@@ -421,33 +422,32 @@
     true (read-book book (book-id book) state)))
 
 (defn make-library [books]
-  (let [shrink 4]
+  (let [shrink 8]
     [:div.library
-     [:div.library-inner
-      (map (fn [[book width pages]]
-             (let [id (str "library-book-" book)
-                   [images book-id html]
-                   (make-book
-                    [book width pages true
-                     (fn [state]
-                       (fn [e]
-                         (take-out-library-book id book width state)))])]
-               [:div.library-book {:key book
-                                   :id id
-                                   :style {:width (px (+ (/ width shrink) 1))
-                                           :height (px (/ 2256 shrink))}}
-                html
-                [:style {:id (str "library-book-style-" book)}]
-                [:div {:style {:display "none"}}
-                 (map (fn [[url state]]
-                        [:img {:key url
-                               :on-load (fn []
-                                          (add-class id "fade-in"))
-                               :src url}])
-                      @images)]]))
-           (sort #(compare (read-string (first %1))
-                           (read-string (first %2)))
-                 books))]]))
+     (map (fn [[book width pages]]
+            (let [id (str "library-book-" book)
+                  [images book-id html]
+                  (make-book
+                   [book width pages true
+                    (fn [state]
+                      (fn [e]
+                        (take-out-library-book id book width state)))])]
+              [:div.library-book {:key book
+                                  :id id
+                                  :style {:width (px (+ (/ width shrink) 1))
+                                          :height (px (/ 2256 shrink))}}
+               html
+               [:style {:id (str "library-book-style-" book)}]
+               [:div {:style {:display "none"}}
+                (map (fn [[url state]]
+                       [:img {:key url
+                              :on-load (fn []
+                                         (add-class id "fade-in"))
+                              :src url}])
+                     @images)]]))
+          (sort #(compare (read-string (first %1))
+                          (read-string (first %2)))
+                books))]))
 
 (defn library []
   (let [bs (js->clj js/books)]
