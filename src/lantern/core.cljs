@@ -65,8 +65,8 @@
   (str "@keyframes spinner-" name " { 0% { transform: translateZ(200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "
        " 100% { transform: "
        (trans (tz 400)
-              (x (spin-degrees))
               (y (spin-degrees))
+              (x (spin-degrees))
               (z (spin-degrees)))
        ";}}"))
 
