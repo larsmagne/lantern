@@ -346,6 +346,8 @@
     (let [done (atom false)
           start (.getTime (js/Date.))]
       (add-class (book-id book) "take-out-slide")
+      (set! (.-transform (find-style (cont-id book)))
+            (trans (tz (* 200 (swap! book-z-index inc)))))
       ;; If we don't get all the images, roll back.
       (js/setTimeout
        (fn []
@@ -402,15 +404,18 @@
         (set! (.-animationName style) "")
         (reset! state :put-back)
         ;; Chrome needs to do a reflow before adding the transition class.
-        (js/setTimeout (fn []
-                         (add-class (book-id book) "put-back-book")
-                         (add-class (cont-id book) "put-back-cont")
-                         (js/setTimeout
-                          (fn []
-                            (remove-class (book-id book) "put-back-book")
-                            (add-class (book-id book) (str "put-back-book-" book)))
-                          3000))
-                       10)))
+        (js/setTimeout
+         (fn []
+           (add-class (book-id book) "put-back-book")
+           (add-class (cont-id book) "put-back-cont")
+           (set! (.-transform (find-style (cont-id book)))
+                 (trans (tz 0)))
+           (js/setTimeout
+            (fn []
+              (remove-class (book-id book) "put-back-book")
+              (add-class (book-id book) (str "put-back-book-" book)))
+            3000))
+         10)))
     true (read-book book (book-id book) state)))
 
 (defn make-library [books]
