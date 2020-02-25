@@ -326,6 +326,7 @@
                "px) rotateY(90deg) rotateX(5deg) scale(0.5) scaleZ(0.5) !important; width: 0px !important; height: 0px !important; }"))))
 
 (defonce book-z-index (atom 1))
+(def prev-click (atom nil))
 (defn z-index [id]
   ;; Messing with z-index messes clicks on the objects up on Chrome,
   ;; but Firefox needs it.
@@ -335,6 +336,10 @@
 (defn take-out-library-book [id book width state]
   (prn "taking out" id state)
   (z-index id)
+  (when (not (= book @prev-click))
+    (reset! prev-click book)
+    (set! (.-transform (find-style (cont-id book)))
+          (trans (tz (* 20 (swap! book-z-index inc))))))
   (cond
     (= @state :put-back)
     (do
@@ -346,8 +351,6 @@
     (let [done (atom false)
           start (.getTime (js/Date.))]
       (add-class (book-id book) "take-out-slide")
-      (set! (.-transform (find-style (cont-id book)))
-            (trans (tz (* 200 (swap! book-z-index inc)))))
       ;; If we don't get all the images, roll back.
       (js/setTimeout
        (fn []
