@@ -119,7 +119,7 @@ a:hover {
 
 .container-spinning {
   transition: all 3s;
-  transform: perspective(1000px) translateZ(200px) scale(0.5) scaleZ(0.5) !important;
+  transform: perspective(800px) translateZ(200px) scale(0.5) scaleZ(0.5) !important;
 }
 
 .fade-in {

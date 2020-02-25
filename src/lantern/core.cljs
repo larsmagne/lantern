@@ -122,9 +122,9 @@
    1000)
   (js/setTimeout (fn []
                    (add-class id "hide-pages")
-                   (add-class (cont-id book) "container-spinning")
                    (remove-class id "closing"))
-                 5000))
+                 5000)
+  (js/setTimeout #(add-class (cont-id book) "container-spinning") 1000))
 
 (defn read-book [book id state]
   (read-book-state @state book id state))
