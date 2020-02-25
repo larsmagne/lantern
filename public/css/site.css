@@ -117,6 +117,11 @@ a:hover {
   position: absolute;
 }
 
+.container-spinning {
+  transition: all 3s;
+  transform: perspective(1000px) translateZ(200px) scale(0.5) scaleZ(0.5) !important;
+}
+
 .fade-in {
   transition: all 3s;
   opacity: 1 !important;
@@ -152,6 +157,7 @@ a:hover {
   left: 0px !important;
   margin-top: 0px !important;
   margin-left: 0px !important;
+  transform: perspective(1000px) translateZ(0px) !important;
 }
 
 .put-back-book {

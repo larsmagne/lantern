@@ -115,12 +115,14 @@
   (add-class id "closing")
   (js/setTimeout
    (fn []
+     (prn "animname" (.-animationName (find-style id)))
      (when (= (.-animationName (find-style id)) "")
        (set! (.-animationName (find-style id)) (str "spinner-" book)))
      (remove-class id "normal"))
    1000)
   (js/setTimeout (fn []
                    (add-class id "hide-pages")
+                   (add-class (cont-id book) "container-spinning")
                    (remove-class id "closing"))
                  5000))
 
@@ -416,6 +418,7 @@
            (js/setTimeout
             (fn []
               (remove-class (book-id book) "put-back-book")
+              (remove-class (cont-id book) "container-spinning")
               (add-class (book-id book) (str "put-back-book-" book)))
             3000))
          10)))
