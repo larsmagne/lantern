@@ -64,7 +64,7 @@
   ;; than Y etc), so that each book spins uniquely.  But smoothly.
   (str "@keyframes spinner-" name " { 0% { transform: translateZ(200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "
        " 100% { transform: "
-       (trans (tz 400)
+       (trans (tz 200)
               (y (spin-degrees))
               (x (spin-degrees))
               (z (spin-degrees)))
