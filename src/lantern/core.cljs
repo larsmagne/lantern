@@ -62,10 +62,9 @@
   ;; The idea here is that we want to spint along all three axis --
   ;; smoothy, but at random speeds (so that X is slower or faster
   ;; than Y etc), so that each book spins uniquely.  But smoothly.
-  (str "@keyframes spinner-" name " { 0% { transform: translateZ(200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "
+  (str "@keyframes spinner-" name " { 0% { transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "
        " 100% { transform: "
-       (trans (tz 200)
-              (y (spin-degrees))
+       (trans (y (spin-degrees))
               (x (spin-degrees))
               (z (spin-degrees)))
        ";}}"))
@@ -91,7 +90,8 @@
   (reset! state :open-1)
   (remove-class id "hide-pages")
   (remove-class id "see-back")
-  (add-class id "open-1"))
+  (add-class id "open-1")
+  (js/setTimeout #(add-class (cont-id book) "container-spinning") 1000))
 
 (defmethod read-book-state :open-1 [_ book id state]
   (reset! state :open-2)
@@ -115,7 +115,6 @@
   (add-class id "closing")
   (js/setTimeout
    (fn []
-     (prn "animname" (.-animationName (find-style id)))
      (when (= (.-animationName (find-style id)) "")
        (set! (.-animationName (find-style id)) (str "spinner-" book)))
      (remove-class id "normal"))
@@ -123,8 +122,7 @@
   (js/setTimeout (fn []
                    (add-class id "hide-pages")
                    (remove-class id "closing"))
-                 5000)
-  (js/setTimeout #(add-class (cont-id book) "container-spinning") 1000))
+                 5000))
 
 (defn read-book [book id state]
   (read-book-state @state book id state))
