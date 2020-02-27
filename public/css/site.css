@@ -243,3 +243,11 @@ div#current-book .book-container {
   transform-style: preserve-3d;
   perspective: 300px;
 }
+
+div.sort {
+  padding: 5px;
+  position: fixed;
+  top: 0%;
+  right: 0%;
+  text-align: center;
+}

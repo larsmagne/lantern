@@ -460,6 +460,12 @@
          10)))
     true (read-book book (book-id book) state)))
 
+(def library-sort (r/atom :numeric))
+
+(defn author [name]
+  ;; Sort by last name.
+  (reduce str (interpose " " (reverse (string/split name " ")))))
+
 (defn make-library [books]
   (let [shrink 8]
     [:div.library
@@ -486,14 +492,27 @@
                                          (add-class id "fade-in"))
                               :src url}])
                      @images)]]))
-          (sort #(compare (read-string (first %1))
-                          (read-string (first %2)))
+          (sort (if (= @library-sort :numeric)
+                  #(compare (read-string (first %1))
+                            (read-string (first %2)))
+                  ;; Sort by author name.
+                  #(compare (author (nth %1 3)) (author (nth %2 3))))
                 books))]))
+
+(defn toggle-sort []
+  (reset! library-sort
+          (if (= @library-sort :numeric)
+            :author
+            :numeric)))
 
 (defn library []
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Library"]
+     [:div.sort {:on-click #(toggle-sort)}
+      [:img {:src "https://quimby.gnus.org/circus/lanterne/lantern.png"
+             :width "20px"
+             :title "Toggle sort"}]]
      (make-library bs)
      [:div#load-images (map (fn [[book]]
                               [:div {:id (str "preload-" book)
