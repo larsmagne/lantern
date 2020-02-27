@@ -123,7 +123,7 @@
   (js/setTimeout
    (fn []
      (when (= (.-animationName (find-style id)) "")
-       (set! (.-animationName (find-style id)) (str "spinner-" book)))
+       (set! (.-animationName (find-style id)) (str "spinner-" (book-id book))))
      (remove-class id "normal"))
    1000)
   (js/setTimeout (fn []
@@ -205,9 +205,9 @@
                   :transform-style "preserve-3d"
                   :width (px width)
                   :height (px height)
-                  :animation-name (str "spinner-" book)})}
+                  :animation-name (str "spinner-" (book-id book))})}
        ;; The spinner animation keyframes.
-       [:style (make-spinner book)]
+       [:style (make-spinner (book-id book))]
        ;; The interior pages.
        (doall
         (map (fn [page]
@@ -333,7 +333,6 @@
            @images)]]))
 
 (defn spinning []
-  (prn (make-spinner "foo"))
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lantern"]
