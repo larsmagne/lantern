@@ -4,7 +4,6 @@
      [clojure.string :as string]
      [cljs.reader :refer [read-string]]))
 
-(defonce current-book (r/atom [:div "Lanternebøkene"]))
 (def book-details (atom {}))
 
 (defn book-id [book]
@@ -137,10 +136,11 @@
 
 (defn display-details [book]
   (let [details (get @book-details book)]
-    (reset! current-book [:div
-                          [:div (nth details 3)]
-                          [:div (nth details 4)]
-                          [:div (nth details 2)]])
+    (r/render [:div
+               [:div (nth details 3)]
+               [:div (nth details 4)]
+               [:div (nth details 2)]]
+              (find-node "current-book"))
     (prn book)))
 
 (defn make-book [[book spine-width spines-only on-click]]
