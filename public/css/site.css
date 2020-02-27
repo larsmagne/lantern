@@ -188,3 +188,26 @@ a:hover {
   background: #404040;
 }
 
+div#current-book {
+  margin-bottom: 20px;
+  border: 1px solid #00f000;
+  border-radius: 10px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: fixed;
+  height: 100px;
+  width: 60%;
+  bottom: 0%;
+  left: 20%;
+  background-color: black; 
+  opacity: 0.5;
+  text-align: center;
+}
+
+div#current-book > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+}

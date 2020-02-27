@@ -4,6 +4,9 @@
      [clojure.string :as string]
      [cljs.reader :refer [read-string]]))
 
+(defonce current-book (r/atom [:div "Lanternebøkene"]))
+(def book-details (atom {}))
+
 (defn book-id [book]
   (str "book" book))
 
@@ -127,7 +130,15 @@
 (defn read-book [book id state]
   (read-book-state @state book id state))
 
-(defn make-book [[book spine-width pages spines-only on-click]]
+(defn display-details [book]
+  (let [details (get @book-details book)]
+    (reset! current-book [:div
+                          [:div (nth details 3)]
+                          [:div (nth details 4)]
+                          [:div (nth details 2)]])
+    (prn book)))
+
+(defn make-book [[book spine-width spines-only on-click]]
   (let [images (atom {})
         shrink 4
         height (/ 2256 shrink)
@@ -149,6 +160,7 @@
      [:div.book-container {:id (cont-id book)}
       [:div.book
        {:id id
+        :on-mouse-over #(display-details book)
         :on-click (if on-click
                     (on-click state)
                     #(read-book book id state))
@@ -425,11 +437,12 @@
 (defn make-library [books]
   (let [shrink 8]
     [:div.library
-     (map (fn [[book width pages]]
+     (map (fn [[book width :as details]]
+            (swap! book-details assoc book details)
             (let [id (str "library-book-" book)
                   [images book-id html]
                   (make-book
-                   [book width pages true
+                   [book width true
                     (fn [state]
                       (fn [e]
                         (take-out-library-book id book width state)))])]
@@ -455,10 +468,11 @@
     [:div
      [:h2 "Library"]
      (make-library bs)
-     [:div#load-images (map (fn [[book _ _]]
+     [:div#load-images (map (fn [[book]]
                               [:div {:id (str "preload-" book)
                                      :key (str "preload-" book)}])
-                            bs)]]))
+                            bs)]
+     [:div#current-book @current-book]]))
 
 ;; -------------------------
 ;; Initialize app
