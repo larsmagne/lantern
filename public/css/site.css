@@ -127,6 +127,11 @@ a:hover {
   opacity: 1 !important;
 }
 
+.fade-in-fast {
+  transition: all 1s;
+  opacity: 1 !important;
+}
+
 .library-book {
   display: inline-block;
   position: relative;
@@ -190,7 +195,6 @@ a:hover {
 
 div#current-book {
   margin-bottom: 20px;
-  border: 1px solid #00f000;
   border-radius: 10px;
   padding: 5px;
   padding-left: 10px;
@@ -200,9 +204,19 @@ div#current-book {
   width: 60%;
   bottom: 0%;
   left: 20%;
-  background-color: black; 
-  opacity: 0.5;
   text-align: center;
+}
+
+div#current-book::after {
+  content: "";
+  background: black;
+  opacity: 0.5;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;   
 }
 
 div#current-book > div {
@@ -210,4 +224,15 @@ div#current-book > div {
   top: 50%;
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
+}
+
+div#current-book .thumbnail {
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  margin-left: -150px;
+  margin-top: -20px;
+}
+
+div#current-book .details {
 }

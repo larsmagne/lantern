@@ -6,13 +6,13 @@
 
 (def book-details (atom {}))
 
-(defn book-id [book]
+(defn ^:dynamic book-id [book]
   (str "book" book))
 
-(defn cont-id [book]
+(defn ^:dynamic cont-id [book]
   (str "book" book "cont"))
 
-(defn page-id [book page]
+(defn ^:dynamic page-id [book page]
   (str "book" book page))
 
 (defn find-node [id]
@@ -32,7 +32,7 @@
 (defn px [number]
   (str number "px"))
 
-(defn image-url [string]
+(defn ^:dynamic image-url [string]
   (str "https://quimby.gnus.org/circus/lanterne/" string))
 
 (defn img [images image]
@@ -134,18 +134,33 @@
 (defn read-book [book id state]
   (read-book-state @state book id state))
 
+(declare make-book)
+(declare wait-for-images)
+
 (defn display-details [book]
   (let [details (get @book-details book)]
-    (r/render [:div
-               [:div (nth details 3)]
-               [:div (nth details 4)]
-               [:div (nth details 2)]]
-              (find-node "current-book"))
-    (prn book)))
+    (binding [image-url (fn [string]
+                          (str "https://quimby.gnus.org/circus/lanterne/tiny/"
+                               string))
+              book-id #(str "tiny-book" %)
+              cont-id #(str "tiny-book" % "cont")
+              page-id #(str "tiny-book" %2 %2)]
+      (let [id (cont-id book)]
+        (r/render [:div
+                   [:div.thumbnail
+                    (wait-for-images (make-book [book (nth details 1)
+                                                 false false
+                                                 20 0 0])
+                                     #(add-class id "fade-in-fast"))]
+                   [:div.details
+                    [:div (nth details 3)]
+                    [:div (nth details 4)]
+                    [:div (nth details 2)]]]
+                  (find-node "current-book"))
+        (prn book)))))
 
-(defn make-book [[book spine-width spines-only on-click]]
+(defn make-book [[book spine-width spines-only on-click shrink pages opacity]]
   (let [images (atom {})
-        shrink 4
         height (/ 2256 shrink)
         width (/ 1392 shrink)
         spine-width (/ spine-width shrink)
@@ -159,10 +174,12 @@
                (img (if spines-only nil images) file))
         id (book-id book)
         oc nil]
+    (prn "shrink " shrink)
     (list
      images
      (cont-id book)
-     [:div.book-container {:id (cont-id book)}
+     [:div.book-container {:id (cont-id book)
+                           :style {:opacity opacity}}
       [:div.book
        {:id id
         :on-mouse-over #(display-details book)
@@ -230,7 +247,7 @@
                       :class (str "face page page" page)
                       :on-click oc
                       :id (page-id book (str "page" page))}]])))
-             (reverse (range 0 8))))
+             (reverse (range 0 pages))))
        [:div.face
         {:style {:width (px width)
                  :height (px height)
@@ -450,7 +467,8 @@
                    [book width true
                     (fn [state]
                       (fn [e]
-                        (take-out-library-book id book width state)))])]
+                        (take-out-library-book id book width state)))
+                    4 8 1])]
               [:div.library-book {:key book
                                   :id id
                                   :style {:width (px (+ (/ width shrink) 1))
