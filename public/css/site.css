@@ -194,6 +194,8 @@ a:hover {
 }
 
 div#current-book {
+  transform-style: preserve-3d;
+  transform: translateZ(100px);
   margin-bottom: 20px;
   border-radius: 10px;
   padding: 5px;
