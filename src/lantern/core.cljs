@@ -137,27 +137,31 @@
 (declare make-book)
 (declare wait-for-images)
 
+(def current-book (atom nil))
+
 (defn display-details [book]
-  (let [details (get @book-details book)]
-    (binding [image-url (fn [string]
-                          (str "https://quimby.gnus.org/circus/lanterne/tiny/"
-                               string))
-              book-id #(str "tiny-book" %)
-              cont-id #(str "tiny-book" % "cont")
-              page-id #(str "tiny-book" %2 %2)]
-      (let [id (cont-id book)]
-        (r/render [:div
-                   [:div.thumbnail
-                    (wait-for-images (make-book [book (nth details 1)
-                                                 false false
-                                                 20 0 0])
-                                     #(add-class id "fade-in-fast"))]
-                   [:div.details
-                    [:div (nth details 3)]
-                    [:div (nth details 4)]
-                    [:div (nth details 2)]]]
-                  (find-node "current-book"))
-        (prn book)))))
+  (when (not (= book @current-book))
+    (reset! current-book book)
+    (let [details (get @book-details book)]
+      (binding [image-url (fn [string]
+                            (str "https://quimby.gnus.org/circus/lanterne/tiny/"
+                                 string))
+                book-id #(str "tiny-book" %)
+                cont-id #(str "tiny-book" % "cont")
+                page-id #(str "tiny-book" %2 %2)]
+        (let [id (cont-id book)]
+          (r/render [:div
+                     [:div.thumbnail
+                      (wait-for-images (make-book [book (nth details 1)
+                                                   false false
+                                                   20 0 0])
+                                       #(add-class id "fade-in-fast"))]
+                     [:div.details
+                      [:div (nth details 3)]
+                      [:div (nth details 4)]
+                      [:div (nth details 2)]]]
+                    (find-node "current-book"))
+          (prn book))))))
 
 (defn make-book [[book spine-width spines-only on-click shrink pages opacity]]
   (let [images (atom {})
@@ -174,7 +178,6 @@
                (img (if spines-only nil images) file))
         id (book-id book)
         oc nil]
-    (prn "shrink " shrink)
     (list
      images
      (cont-id book)
@@ -182,7 +185,10 @@
                            :style {:opacity opacity}}
       [:div.book
        {:id id
-        :on-mouse-over #(display-details book)
+        :on-mouse-over (fn []
+                         (when (or (= @state :spine)
+                                   (= @state :put-back))
+                           (display-details book)))
         :on-click (if on-click
                     (on-click state)
                     #(read-book book id state))
@@ -439,7 +445,6 @@
             style (.-style node)]
         (set! (.-transform style) (js/window.getRotation node))
         (set! (.-animationName style) "")
-        (reset! state :put-back)
         ;; Chrome needs to do a reflow before adding the transition class.
         (js/setTimeout
          (fn []
@@ -451,7 +456,8 @@
             (fn []
               (remove-class (book-id book) "put-back-book")
               (remove-class (cont-id book) "container-spinning")
-              (add-class (book-id book) (str "put-back-book-" book)))
+              (add-class (book-id book) (str "put-back-book-" book))
+              (reset! state :put-back))
             3000))
          10)))
     true (read-book book (book-id book) state)))
