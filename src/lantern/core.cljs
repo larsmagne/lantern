@@ -334,7 +334,7 @@
 (defn spinning []
   (let [bs (js->clj js/books)]
     [:div
-     [:h2 "Lantern"]
+     [:h2 "Lanternebøkene"]
      (wait-for-images (make-book (nth bs 55)))
      (wait-for-images (make-book (nth bs 33)))
      (wait-for-images (make-book (nth bs 32)))]))
