@@ -321,8 +321,7 @@
                      ;; Call the provided callback.
                      ((first callback))
                      ;; The default callback.
-                     (let [node (.getElementById js/document id)]
-                       (.add (.-classList node) "fade-in")))))]
+                     (add-class id "fade-in"))))]
     [:div {:key (first (first @images))}
      html
      [:div {:style {:display "none"}}
