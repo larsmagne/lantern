@@ -65,7 +65,12 @@
   ;; The idea here is that we want to spint along all three axis --
   ;; smoothy, but at random speeds (so that X is slower or faster
   ;; than Y etc), so that each book spins uniquely.  But smoothly.
-  (str "@keyframes spinner-" name " { 0% { transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg); } "
+  (str "@keyframes spinner-" name " { "
+       " 0% { transform: "
+       (trans (y 0)
+              (x 0)
+              (z 0))
+       "; } "
        " 100% { transform: "
        (trans (y (spin-degrees))
               (x (spin-degrees))
@@ -472,7 +477,7 @@
                               [:div {:id (str "preload-" book)
                                      :key (str "preload-" book)}])
                             bs)]
-     [:div#current-book @current-book]]))
+     [:div#current-book [:div "Lanternebøkene"]]]))
 
 ;; -------------------------
 ;; Initialize app
