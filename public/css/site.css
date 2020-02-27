@@ -236,3 +236,8 @@ div#current-book .thumbnail {
 
 div#current-book .details {
 }
+
+div#current-book .book-container {
+  transform-style: preserve-3d;
+  perspective: 300px;
+}
