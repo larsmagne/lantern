@@ -353,7 +353,7 @@
 (defn spinning []
   (let [bs (js->clj js/books)]
     [:div
-     [:h2 "Lanternebøkene"]
+     [:h2 "Lanterne-bøkene"]
      (wait-for-images (make-book :book (nth (nth bs 55) 0)
                                  :spine-width (nth (nth bs 55) 1)))
      (wait-for-images (make-book :book (nth (nth bs 45) 0)
@@ -544,7 +544,7 @@
                               [:div {:id (str "preload-" book)
                                      :key (str "preload-" book)}])
                             bs)]
-     [:div#current-book [:table>tbody>tr>td "Lanternebøkene"]]]))
+     [:div#current-book [:table>tbody>tr>td "Lanterne-bøkene"]]]))
 
 ;; -------------------------
 ;; Initialize app
