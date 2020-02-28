@@ -536,8 +536,8 @@
     [:div
      [:h2 "Library"]
      [:div.sort {:on-click #(toggle-sort)}
-      [:img {:src "https://quimby.gnus.org/circus/lanterne/lantern.png"
-             :width "20px"
+      [:img {:src (image-url "lantern.png")
+             :width (px 20)
              :title "Toggle sort"}]]
      (make-library bs)
      [:div#load-images (map (fn [[book]]
