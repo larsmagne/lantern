@@ -45,13 +45,19 @@
 (defn tz [z]
   (str "translateZ(" z "px)"))
 
-(defn x [x]
+(defn ty [z]
+  (str "translateY(" z "px)"))
+
+(defn tx [z]
+  (str "translateX(" z "px)"))
+
+(defn rx [x]
   (str "rotateX(" x "deg)"))
 
-(defn y [y]
+(defn ry [y]
   (str "rotateY(" y "deg)"))
 
-(defn z [z]
+(defn rz [z]
   (str "rotateZ(" z "deg)"))
 
 (defn trans [& elems]
@@ -66,14 +72,14 @@
   ;; than Y etc), so that each book spins uniquely.  But smoothly.
   (str "@keyframes spinner-" name " { "
        " 0% { transform: "
-       (trans (y 0)
-              (x 0)
-              (z 0))
+       (trans (ry 0)
+              (rx 0)
+              (rz 0))
        "; } "
        " 100% { transform: "
-       (trans (y (spin-degrees))
-              (x (spin-degrees))
-              (z (spin-degrees)))
+       (trans (ry (spin-degrees))
+              (rx (spin-degrees))
+              (rz (spin-degrees)))
        ";}}"))
 
 (defmulti read-book-state #'identity)
@@ -209,10 +215,9 @@
         :style (if spines-only
                  {:animation-duration (str (+ (rand 10) 50) "s")
                   :transform (trans (tz 0)
-                                    (str "translateX("
-                                         (/ spine-width shrink) "px)")
-                                    (y 90)
-                                    (x 5)
+                                    (tx (/ spine-width shrink))
+                                    (ry 90)
+                                    (rx 5)
                                     (str " scale(0.5)")
                                     (str " scaleZ(0.5)"))}
                  {:animation-duration (str (+ (rand 10) 50) "s")
@@ -234,7 +239,7 @@
                       :height (px height)
                       :transform (trans (tz (- (/ spine-width 2)
                                                (+ (/ page 10) 0.1)))
-                                        (x 0))}}
+                                        (rx 0))}}
                     [:div
                      {:style
                       {:width (px width)
@@ -253,10 +258,10 @@
                     {:key (str "page" page)
                      :style {:width (px width)
                              :height (px height)
-                             :transform (trans (z 180)
+                             :transform (trans (rz 180)
                                                (tz (- (/ spine-width 2)
                                                       (+ (/ page 10) 0.1)))
-                                               (x 180))}}
+                                               (rx 180))}}
                     [:div
                      {:style
                       {:width (px width)
@@ -271,7 +276,7 @@
        [:div.face
         {:style {:width (px width)
                  :height (px height)
-                 :transform (trans (y 0) (tz (/ spine-width 2)))}}
+                 :transform (trans (ry 0) (tz (/ spine-width 2)))}}
         [:div.face.front
          {:style {image-property (simg images (str book "/01.jpg"))
                   :width (px width)
@@ -285,7 +290,7 @@
                  :width (px width)
                  :height (px height)
                  :background-size (str (px width) " " (px height))
-                 :transform (trans (y 180) (tz (/ spine-width 2)))}
+                 :transform (trans (ry 180) (tz (/ spine-width 2)))}
          :id (page-id book "back")
          :on-click oc}]
        [:div.face.left
@@ -294,7 +299,7 @@
                  :height (px height)
                  :background-size (str (px spine-width) " " (px height))
                  :left (px (- (/ width 2) (/ spine-width 2)))
-                 :transform (trans (y -90) (tz (/ width 2)))}
+                 :transform (trans (ry -90) (tz (/ width 2)))}
          :id (page-id book "left")
          :on-click oc}]
        [:div.face.right
@@ -303,7 +308,7 @@
                  :height (px height)
                  :background-size (str (px spine-width) " " (px height))
                  :left (px (- (/ width 2) (/ spine-width 2)))
-                 :transform (trans (y 90) (tz (/ width 2)))}
+                 :transform (trans (ry 90) (tz (/ width 2)))}
          :id (page-id book "right")
          :on-click oc}]
        [:div.face.top
@@ -312,7 +317,7 @@
                  :height (px spine-width)
                  :background-size (str (px width) " " (px spine-width))
                  :top (px (- (/ height 2) (/ spine-width 2)))
-                 :transform (trans (x 90) (tz (/ height 2)))}
+                 :transform (trans (rx 90) (tz (/ height 2)))}
          :id (page-id book "top")
          :on-click oc}]
        [:div.face.bottom
@@ -321,7 +326,7 @@
                  :height (px spine-width)
                  :background-size (str (px width) " " (px spine-width))
                  :top (px (- (/ height 2) (/ spine-width 2)))
-                 :transform (trans (x -90) (tz (/ height 2)))}
+                 :transform (trans (rx -90) (tz (/ height 2)))}
          :id (page-id book "bottom")
          :on-click oc}]]])))
 
