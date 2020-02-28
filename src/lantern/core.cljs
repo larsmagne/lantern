@@ -159,9 +159,10 @@
                                         #(add-class id "fade-in-fast"))]]
                      [:td.details
                       [:div
-                       [:div (nth details 3)]
-                       [:div (nth details 4)]
-                       [:div (nth details 2)]]]
+                       [:div
+                        [:div (nth details 3)]
+                        [:div (nth details 4)]
+                        [:div (nth details 2)]]]]
                      [:td.number
                       (str "L " (nth details 0))]]
                     (find-node "current-book"))

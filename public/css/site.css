@@ -204,8 +204,10 @@ div#current-book {
   height: 100px;
   width: 60%;
   bottom: 0%;
-  left: 20%;
+  left: 50%;
   text-align: center;
+  width: 800px;
+  margin-left: -400px;
 }
 
 div#current-book::after {
@@ -238,11 +240,22 @@ td.details {
 td.details > div {
   height: 95px;
   overflow: hidden;
+  position: relative;
+}
+
+td.details > div > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
 }
 
 td.thumbnail > div {
-  margin-left: 25px;
-  margin-top: -53px;
+  position: absolute;
+  width: 100px;
+  height: 93px;
+  margin-left: 150px;
+  margin-top: -55px;
   transform: translateZ(100px);
 }
 
