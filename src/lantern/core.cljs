@@ -157,6 +157,7 @@
                                                    :spine-width (nth details 1)
                                                    :shrink 20
                                                    :pages 0
+                                                   :on-click false
                                                    :opacity 0)
                                         #(add-class id "fade-in-fast"))]]
                      [:td.details
@@ -174,7 +175,8 @@
                            opacity]
                     :or {shrink 4
                          pages 8
-                         opacity 1}}]
+                         opacity 1
+                         on-click 'default}}]
   (let [images (atom {})
         height (/ 2256 shrink)
         width (/ 1392 shrink)
@@ -200,9 +202,10 @@
                          (when (or (= @state :spine)
                                    (= @state :put-back))
                            (display-details book)))
-        :on-click (if on-click
-                    (on-click state)
-                    #(read-book book id state))
+        :on-click (when on-click
+                    (if (= on-click 'default)
+                      #(read-book book id state)
+                      (on-click state)))
         :style (if spines-only
                  {:animation-duration (str (+ (rand 10) 50) "s")
                   :transform (trans (tz 0)
