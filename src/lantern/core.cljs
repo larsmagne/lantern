@@ -451,7 +451,7 @@
                 (if (< lapsed 1000)
                   (js/setTimeout loaded (- 1000 lapsed))
                   (loaded))))))
-         (.getElementById js/document (str "preload-" book)))))
+         (find-node (str "preload-" book)))))
     (= @state :spinning)
     (do
       ;; Set the current animation 3d transform so we have something to
@@ -545,7 +545,7 @@
 ;; Initialize app
 
 (defn mount-root []
-  (r/render [library] (.getElementById js/document "app")))
+  (r/render [library] (find-node "app")))
 
 (defn init! []
   (mount-root))
