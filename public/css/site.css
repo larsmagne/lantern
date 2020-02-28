@@ -260,6 +260,10 @@ td.thumbnail > div {
   transform: translateZ(100px);
 }
 
+td.thumbnail .book {
+  cursor: default !important;
+}
+
 div.sort {
   cursor: pointer;
   padding: 5px;
