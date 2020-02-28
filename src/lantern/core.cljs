@@ -153,9 +153,11 @@
           (r/render [:table>tbody>tr
                      [:td.thumbnail
                       [:div
-                       (wait-for-images (make-book [book (nth details 1)
-                                                    false false
-                                                    20 0 0])
+                       (wait-for-images (make-book :book book
+                                                   :spine-width (nth details 1)
+                                                   :shrink 20
+                                                   :pages 0
+                                                   :opacity 0)
                                         #(add-class id "fade-in-fast"))]]
                      [:td.details
                       [:div
@@ -168,7 +170,11 @@
                     (find-node "current-book"))
           (prn book))))))
 
-(defn make-book [[book spine-width spines-only on-click shrink pages opacity]]
+(defn make-book [& {:keys [book spine-width spines-only on-click shrink pages
+                           opacity]
+                    :or {shrink 4
+                         pages 8
+                         opacity 1}}]
   (let [images (atom {})
         height (/ 2256 shrink)
         width (/ 1392 shrink)
@@ -316,7 +322,7 @@
          :id (page-id book "bottom")
          :on-click oc}]]])))
 
-(defn wait-for-images [[images id html] & callback]
+(defn wait-for-images [[images id html] & [callback]]
   (let [loaded (fn [node url]
                  (swap! images conj {url :loaded})
                  (when (every? (fn [[_ status]]
@@ -324,7 +330,7 @@
                                @images)
                    (if callback
                      ;; Call the provided callback.
-                     ((first callback))
+                     (callback)
                      ;; The default callback.
                      (add-class id "fade-in"))))]
     [:div {:key (first (first @images))}
@@ -340,9 +346,12 @@
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lanternebøkene"]
-     (wait-for-images (make-book (nth bs 55)))
-     (wait-for-images (make-book (nth bs 33)))
-     (wait-for-images (make-book (nth bs 32)))]))
+     (wait-for-images (make-book :book (nth (nth bs 55) 0)
+                                 :spine-width (nth (nth bs 55) 1)))
+     (wait-for-images (make-book :book (nth (nth bs 45) 0)
+                                 :spine-width (nth (nth bs 45) 1)))
+     (wait-for-images (make-book :book (nth (nth bs 65) 0)
+                                 :spine-width (nth (nth bs 65) 1)))]))
 
 (defn set-background-image [images class book]
   (let [style (find-style (page-id book class))
@@ -478,12 +487,16 @@
             (swap! book-details assoc book details)
             (let [id (str "library-book-" book)
                   [images book-id html]
-                  (make-book
-                   [book width true
-                    (fn [state]
-                      (fn [e]
-                        (take-out-library-book id book width state)))
-                    4 8 1])]
+                  (make-book :book book
+                             :spine-width width
+                             :spines-only true
+                             :on-click (fn [state]
+                                         (fn [e]
+                                           (take-out-library-book
+                                            id book width state)))
+                             :shrink 4
+                             :pages 8
+                             :opacity 1)]
               [:div.library-book {:key book
                                   :id id
                                   :style {:width (px (+ (/ width shrink) 1))
