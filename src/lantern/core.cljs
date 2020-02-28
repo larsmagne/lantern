@@ -523,7 +523,7 @@
                               [:div {:id (str "preload-" book)
                                      :key (str "preload-" book)}])
                             bs)]
-     [:div#current-book [:div "Lanternebøkene"]]]))
+     [:div#current-book [:table>tbody>tr>td "Lanternebøkene"]]]))
 
 ;; -------------------------
 ;; Initialize app
