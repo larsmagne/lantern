@@ -221,27 +221,29 @@ div#current-book::after {
   z-index: -1;   
 }
 
-div#current-book > div {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateY(-50%) translateX(-50%);
+div#current-book > table {
+  width: 100%;
+  layout: fixed;
+  height: 90px;
 }
 
-div#current-book .thumbnail {
-  position: absolute;
-  width: 0px;
-  height: 0px;
-  margin-left: -130px;
-  margin-top: -20px;
+td {
+  width: 25%;
 }
 
-div#current-book .details {
+td.details {
+  width: 50%;
 }
 
-div#current-book .book-container {
-  transform-style: preserve-3d;
-  perspective: 300px;
+td.details > div {
+  height: 95px;
+  overflow: hidden;
+}
+
+td.thumbnail > div {
+  margin-left: 25px;
+  margin-top: -53px;
+  transform: translateZ(100px);
 }
 
 div.sort {

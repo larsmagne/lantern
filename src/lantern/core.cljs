@@ -150,16 +150,20 @@
                 cont-id #(str "tiny-book" % "cont")
                 page-id #(str "tiny-book" %2 %2)]
         (let [id (cont-id book)]
-          (r/render [:div
-                     [:div.thumbnail
-                      (wait-for-images (make-book [book (nth details 1)
-                                                   false false
-                                                   20 0 0])
-                                       #(add-class id "fade-in-fast"))]
-                     [:div.details
-                      [:div (nth details 3)]
-                      [:div (nth details 4)]
-                      [:div (nth details 2)]]]
+          (r/render [:table>tbody>tr
+                     [:td.thumbnail
+                      [:div
+                       (wait-for-images (make-book [book (nth details 1)
+                                                    false false
+                                                    20 0 0])
+                                        #(add-class id "fade-in-fast"))]]
+                     [:td.details
+                      [:div
+                       [:div (nth details 3)]
+                       [:div (nth details 4)]
+                       [:div (nth details 2)]]]
+                     [:td.number
+                      (str "L " (nth details 0))]]
                     (find-node "current-book"))
           (prn book))))))
 
