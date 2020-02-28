@@ -23,6 +23,7 @@ a:hover {
 }
 
 .book {
+  cursor: pointer;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
@@ -260,6 +261,7 @@ td.thumbnail > div {
 }
 
 div.sort {
+  cursor: pointer;
   padding: 5px;
   position: fixed;
   top: 0%;
