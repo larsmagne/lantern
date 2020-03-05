@@ -1,6 +1,7 @@
 (ns lantern.core
     (:require
      [reagent.core :as r]
+     [cemerick.url :as url]
      [clojure.string :as string]
      [cljs.reader :refer [read-string]]))
 
@@ -350,17 +351,6 @@
                      :src url}])
            @images)]]))
 
-(defn spinning []
-  (let [bs (js->clj js/books)]
-    [:div
-     [:h2 "Lanterne-bøkene"]
-     (wait-for-images (make-book :book (nth (nth bs 55) 0)
-                                 :spine-width (nth (nth bs 55) 1)))
-     (wait-for-images (make-book :book (nth (nth bs 45) 0)
-                                 :spine-width (nth (nth bs 45) 1)))
-     (wait-for-images (make-book :book (nth (nth bs 65) 0)
-                                 :spine-width (nth (nth bs 65) 1)))]))
-
 (defn set-background-image [images class book]
   (let [style (find-style (page-id book class))
         spec (.-backgroundUrl style)
@@ -503,8 +493,7 @@
                                            (take-out-library-book
                                             id book width state)))
                              :shrink 4
-                             :pages 8
-                             :opacity 1)]
+                             :pages 8)]
               [:div.library-book {:key book
                                   :id id
                                   :style {:width (px (+ (/ width shrink) 1))
@@ -549,8 +538,33 @@
 ;; -------------------------
 ;; Initialize app
 
+(defmulti current-page #'identity)
+
+(defmethod current-page :library []
+  [library])
+
+(defmethod current-page :spinning []
+  (let [bs (js->clj js/books)]
+    [:div
+     [:h2 "Lanterne-bøkene"]
+     (wait-for-images (make-book :book (nth (nth bs 55) 0)
+                                 :spine-width (nth (nth bs 55) 1)
+                                 :opacity 0))
+     (wait-for-images (make-book :book (nth (nth bs 45) 0)
+                                 :spine-width (nth (nth bs 45) 1)
+                                 :opacity 0))
+     (wait-for-images (make-book :book (nth (nth bs 65) 0)
+                                 :spine-width (nth (nth bs 65) 1)
+                                 :opacity 0))]))
+
+(defn make-current-page []
+  (let [params (:query (url/url (-> js/window .-location .-href)))]
+    (if (get params "page")
+      (current-page (keyword (get params "page")))
+      (current-page :library))))
+
 (defn mount-root []
-  (r/render [library] (find-node "app")))
+  (r/render (make-current-page) (find-node "app")))
 
 (defn init! []
   (mount-root))
