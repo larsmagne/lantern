@@ -547,15 +547,16 @@
   (let [bs (js->clj js/books)]
     [:div
      [:h2 "Lanterne-bøkene"]
-     (wait-for-images (make-book :book (nth (nth bs 55) 0)
-                                 :spine-width (nth (nth bs 55) 1)
-                                 :opacity 0))
-     (wait-for-images (make-book :book (nth (nth bs 45) 0)
-                                 :spine-width (nth (nth bs 45) 1)
-                                 :opacity 0))
-     (wait-for-images (make-book :book (nth (nth bs 65) 0)
-                                 :spine-width (nth (nth bs 65) 1)
-                                 :opacity 0))]))
+     [:div {:style {:transform-style "preserve-3d"}}
+      (wait-for-images (make-book :book (nth (nth bs 55) 0)
+                                  :spine-width (nth (nth bs 55) 1)
+                                  :opacity 0))
+      (wait-for-images (make-book :book (nth (nth bs 45) 0)
+                                  :spine-width (nth (nth bs 45) 1)
+                                  :opacity 0))
+      (wait-for-images (make-book :book (nth (nth bs 65) 0)
+                                  :spine-width (nth (nth bs 65) 1)
+                                  :opacity 0))]]))
 
 (defn make-current-page []
   (let [params (:query (url/url (-> js/window .-location .-href)))]
