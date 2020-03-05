@@ -527,7 +527,7 @@
      [:div.sort {:on-click #(toggle-sort)}
       [:img {:src (image-url "lantern.png")
              :width (px 40)
-             :title "Toggle sort"}]]
+             :title "Toggle Sort"}]]
      (make-library bs)
      [:div#load-images (map (fn [[book]]
                               [:div {:id (str "preload-" book)
@@ -556,6 +556,25 @@
                                   :opacity 0))
       (wait-for-images (make-book :book (nth (nth bs 65) 0)
                                   :spine-width (nth (nth bs 65) 1)
+                                  :opacity 0))]]))
+
+(defmethod current-page :book []
+  (let [bs (js->clj js/books)
+        params (:query (url/url (-> js/window .-location .-href)))
+        book (nth bs (first (first
+                             (filter #(= (get params "book")
+                                         (first (first (rest %))))
+                                     (map-indexed vector bs)))))]
+    [:div
+     [:h2 "Lanterne-bøkene"]
+     [:div.sort {:on-click #(r/render [library] (find-node "app"))}
+      [:img {:src (image-url "lantern.png")
+             :width (px 40)
+             :title "Show Library"}]]
+     [:div {:style {:transform-style "preserve-3d"}
+            :class "single-book"}
+      (wait-for-images (make-book :book (nth book 0)
+                                  :spine-width (nth book 1)
                                   :opacity 0))]]))
 
 (defn make-current-page []

@@ -276,3 +276,11 @@ div.sort {
 div.det {
   display: none;
 }
+
+.single-book div {
+  transform-style: preserve-3d;
+}
+
+.single-book .book-container {
+  margin-left: 100px;
+}
