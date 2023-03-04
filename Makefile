@@ -8,3 +8,6 @@ deploy-images:
 	rsync -av /home/larsi/lanterne/small/ www@quimby:html/circus/lanterne/
 	rsync -av /home/larsi/lanterne/tiny www@quimby:html/circus/lanterne/
 	rsync -av /home/larsi/lanterne/pages www@quimby:html/circus/lanterne/
+
+run-server:
+	lein figwheel
