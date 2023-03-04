@@ -378,10 +378,8 @@
 (defonce book-z-index (atom 1))
 (def prev-click (atom nil))
 (defn z-index [id]
-  ;; Messing with z-index messes clicks on the objects up on Chrome,
-  ;; but Firefox needs it.
-  (when (string/includes? (.-userAgent js/navigator) "Firefox")
-    (set! (.-zIndex (find-style id)) (swap! book-z-index inc))))
+  (set! (.-zIndex (find-style id)) (swap! book-z-index inc))
+  (js/console.log "set zindex" (.-zIndex (find-style id))))
 
 (defn take-out-library-book [id book width state]
   (prn "taking out" id state)
