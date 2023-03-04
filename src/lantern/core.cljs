@@ -378,8 +378,7 @@
 (defonce book-z-index (atom 1))
 (def prev-click (atom nil))
 (defn z-index [id]
-  (set! (.-zIndex (find-style id)) (swap! book-z-index inc))
-  (js/console.log "set zindex" (.-zIndex (find-style id))))
+  (set! (.-zIndex (find-style id)) (swap! book-z-index inc)))
 
 (defn take-out-library-book [id book width state]
   (prn "taking out" id state)
