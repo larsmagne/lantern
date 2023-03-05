@@ -541,6 +541,7 @@
 (defmethod current-page :library []
   [library])
 
+;; http://localhost:3449/index.html?page=spinning
 (defmethod current-page :spinning []
   (let [bs (js->clj js/books)]
     [:div
@@ -558,6 +559,7 @@
                                         "visible"))))
        (take 3 (repeatedly #(int (rand (count bs))))))]]))
 
+;; http://localhost:3449/index.html?page=book&book=2
 (defmethod current-page :book []
   (let [bs (js->clj js/books)
         params (:query (url/url (-> js/window .-location .-href)))
