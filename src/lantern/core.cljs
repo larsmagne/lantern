@@ -552,10 +552,11 @@
                book (nth details 0)]
            (wait-for-images (make-book :book book
                                        :spine-width (nth details 1)
-                                       :opacity 0)
+                                       :opacity 0
+                                       :on-click false)
                             #(add-class (str (book-id book) "cont")
                                         "visible"))))
-       '(55 45 65))]]))
+       (take 3 (repeatedly #(int (rand (count bs))))))]]))
 
 (defmethod current-page :book []
   (let [bs (js->clj js/books)
