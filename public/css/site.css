@@ -116,6 +116,7 @@ a:hover {
 .book-container {
   /* opacity: 0; */
   position: absolute;
+  transform-style: preserve-3d;
 }
 
 .container-spinning {
@@ -133,6 +134,11 @@ a:hover {
   opacity: 1 !important;
 }
 
+.visible {
+  opacity: 1 !important;
+}
+
+
 .library-book {
   display: inline-block;
   position: relative;
@@ -148,6 +154,7 @@ a:hover {
 }
 
 .library {
+  pointer-events: none;
   position: relative;
   perspective: 300000px;
   transform-style: preserve-3d;

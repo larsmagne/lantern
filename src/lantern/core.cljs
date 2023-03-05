@@ -342,7 +342,8 @@
                      (callback)
                      ;; The default callback.
                      (add-class id "fade-in"))))]
-    [:div {:key (first (first @images))}
+    [:div {:style {:transform-style "preserve-3d"}
+           :key (first (first @images))}
      html
      [:div {:style {:display "none"}}
       (map (fn [[url state]]
@@ -545,15 +546,16 @@
     [:div
      [:h2 "Lanterne-bøkene"]
      [:div {:style {:transform-style "preserve-3d"}}
-      (wait-for-images (make-book :book (nth (nth bs 55) 0)
-                                  :spine-width (nth (nth bs 55) 1)
-                                  :opacity 0))
-      (wait-for-images (make-book :book (nth (nth bs 45) 0)
-                                  :spine-width (nth (nth bs 45) 1)
-                                  :opacity 0))
-      (wait-for-images (make-book :book (nth (nth bs 65) 0)
-                                  :spine-width (nth (nth bs 65) 1)
-                                  :opacity 0))]]))
+      (map
+       (fn [index]
+         (let [details (nth bs index)
+               book (nth details 0)]
+           (wait-for-images (make-book :book book
+                                       :spine-width (nth details 1)
+                                       :opacity 0)
+                            #(add-class (str (book-id book) "cont")
+                                        "visible"))))
+       '(55 45 65))]]))
 
 (defmethod current-page :book []
   (let [bs (js->clj js/books)
