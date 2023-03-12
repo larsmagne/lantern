@@ -11,3 +11,6 @@ deploy-images:
 
 run-server:
 	lein figwheel
+
+make-tiny:
+	make-images
